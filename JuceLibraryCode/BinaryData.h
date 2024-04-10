@@ -8,6 +8,9 @@
 
 namespace BinaryData
 {
+    extern const char*   horn_gif;
+    const int            horn_gifSize = 341614;
+
     extern const char*   leslie_jpeg;
     const int            leslie_jpegSize = 184867;
 
@@ -15,7 +18,7 @@ namespace BinaryData
     const int            leslie2_jpgSize = 52167;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 2;
+    const int namedResourceListSize = 3;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

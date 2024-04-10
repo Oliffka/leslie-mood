@@ -13,7 +13,8 @@
 using namespace juce;
 //==============================================================================
 LeslieSpeakerPluginAudioProcessorEditor::LeslieSpeakerPluginAudioProcessorEditor (LeslieSpeakerPluginAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : AudioProcessorEditor (&p), audioProcessor (p),
+    jifObj(BinaryData::horn_gif, BinaryData::horn_gifSize)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -37,6 +38,8 @@ void LeslieSpeakerPluginAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
     g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
+    
+    jifObj.paint(g, getLocalBounds().toFloat());
 }
 
 void LeslieSpeakerPluginAudioProcessorEditor::resized()

@@ -263,10 +263,10 @@ void PluginGui::paint (juce::Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (juce::Colour (0xff323e44));
+    //g.fillAll (juce::Colour (0xff323e44));
 
     //[UserPaint] Add your own custom painting code here..
-    g.drawImageAt (backImage, 0, 0);
+    //g.drawImageAt (backImage, 0, 0);
     //[/UserPaint]
 }
 
