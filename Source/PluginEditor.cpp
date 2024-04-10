@@ -21,6 +21,7 @@ LeslieSpeakerPluginAudioProcessorEditor::LeslieSpeakerPluginAudioProcessorEditor
     addAndMakeVisible(pluginGui.get());
 
     setSize (pluginGui->getWidth(), pluginGui->getHeight());
+    startTimerHz(10);
 }
 
 LeslieSpeakerPluginAudioProcessorEditor::~LeslieSpeakerPluginAudioProcessorEditor()
@@ -42,4 +43,10 @@ void LeslieSpeakerPluginAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
+}
+
+void LeslieSpeakerPluginAudioProcessorEditor::timerCallback()
+{
+    ++jifObj;
+    repaint();
 }

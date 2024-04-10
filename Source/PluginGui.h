@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 7.0.10
+  Created with Projucer version: 7.0.11
 
   ------------------------------------------------------------------------------
 
@@ -51,8 +51,6 @@ public:
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
 
-
-
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     juce::Image backImage;
@@ -75,7 +73,6 @@ private:
     std::unique_ptr<juce::Label> lblBassDelay;
     std::unique_ptr<juce::Label> lblBass;
     std::unique_ptr<juce::Label> lblBassLfo;
-    std::unique_ptr<juce::Slider> juce__slider4;
     std::unique_ptr<juce::Slider> juce__slider5;
     std::unique_ptr<juce::Slider> juce__slider3;
     std::unique_ptr<juce::Label> lblHorn;
