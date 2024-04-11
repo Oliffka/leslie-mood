@@ -23,6 +23,8 @@ public:
     void operator++();
     void resetAnimation();
     
+    int getWidth() const;
+    int getHeight() const;
 private:
     std::vector<Image> images;
     int readIdx{0};

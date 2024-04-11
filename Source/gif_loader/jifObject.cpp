@@ -31,7 +31,7 @@ JifObject::JifObject(const void* jifData, const size_t jifSize) : images()
     init();
 }
 
-void JifObject::addImg(const Image& img) 
+void JifObject::addImg(const Image& img)
 {
     images.push_back(img);
 }
@@ -62,7 +62,7 @@ void JifObject::init()
 void JifObject::paint(juce::Graphics& g, const juce::Rectangle<float>& bounds)
 {
     g.setImageResamplingQuality(juce::Graphics::highResamplingQuality);
-    if (readIdx >= numImages()) 
+    if (readIdx >= numImages())
     {
         readIdx = 0;
         g.fillAll(juce::Colours::white);
@@ -71,12 +71,23 @@ void JifObject::paint(juce::Graphics& g, const juce::Rectangle<float>& bounds)
 }
 
 void JifObject::operator++()
-{ 
+{
     ++readIdx;
 }
 
 void JifObject::resetAnimation()
 {
     readIdx = 0;
+}
+
+int JifObject::getWidth() const
+{
+    return imageWidth;
+}
+
+
+int JifObject::getHeight() const
+{
+    return imageHeight;
 }
 }

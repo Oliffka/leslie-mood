@@ -219,11 +219,12 @@ PluginGui::PluginGui ()
     btnLeslie147->setRadioGroupId (LeslieModels);
     //[/UserPreSize]
 
-    setSize (600, 400);
+    setSize (800, 800);
 
 
     //[Constructor] You can add your own custom stuff here..
     setSize (backImage.getWidth(), backImage.getHeight());
+    setSize (800, 800);
     std::cout<<"width: " << backImage.getWidth()<<"; height: " << backImage.getHeight();
     //[/Constructor]
 }
@@ -263,10 +264,8 @@ void PluginGui::paint (juce::Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    //g.fillAll (juce::Colour (0xff323e44));
-
     //[UserPaint] Add your own custom painting code here..
-    //g.drawImageAt (backImage, 0, 0);
+    g.drawImageAt (backImage, 0, 0);
     //[/UserPaint]
 }
 

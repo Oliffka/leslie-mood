@@ -9,20 +9,32 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "PluginGui.h"
+#include "GifComponent.h"
 
 using namespace juce;
 //==============================================================================
 LeslieSpeakerPluginAudioProcessorEditor::LeslieSpeakerPluginAudioProcessorEditor (LeslieSpeakerPluginAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p),
-    jifObj(BinaryData::horn_gif, BinaryData::horn_gifSize)
+    : AudioProcessorEditor (&p), audioProcessor (p)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     pluginGui = std::make_unique<PluginGui>();
     addAndMakeVisible(pluginGui.get());
 
+    gifComponent = std::make_unique<GifComponent>();
+    addAndMakeVisible(gifComponent.get());
+    
     setSize (pluginGui->getWidth(), pluginGui->getHeight());
-    startTimerHz(10);
+    
+    const auto gifWidth = gifComponent->getWidth();
+    const auto gifHeight = gifComponent->getHeight();
+    
+    const auto gifX = (this->getWidth() - gifWidth) / 2;
+    const auto gifY = (this->getHeight() - gifHeight) / 2;
+    
+    gifComponent->setTopLeftPosition (gifX, gifY);
+    
+    setSize (pluginGui->getWidth(), pluginGui->getHeight());
 }
 
 LeslieSpeakerPluginAudioProcessorEditor::~LeslieSpeakerPluginAudioProcessorEditor()
@@ -38,8 +50,6 @@ void LeslieSpeakerPluginAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
     g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
-    
-    jifObj.paint(g, getLocalBounds().toFloat());
 }
 
 void LeslieSpeakerPluginAudioProcessorEditor::resized()
@@ -48,8 +58,3 @@ void LeslieSpeakerPluginAudioProcessorEditor::resized()
     // subcomponents in your editor..
 }
 
-void LeslieSpeakerPluginAudioProcessorEditor::timerCallback()
-{
-    ++jifObj;
-    repaint();
-}

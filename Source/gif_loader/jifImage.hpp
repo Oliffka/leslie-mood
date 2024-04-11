@@ -27,10 +27,19 @@ struct Image {
     {}
     void paint(juce::Graphics& g, const juce::Rectangle<float>& bounds) 
     {
-        const auto nX = x * bounds.getWidth();
-        const auto nY = y * bounds.getHeight();
-        const auto nWidth = width * bounds.getWidth();
-        const auto nHeight = height * bounds.getHeight();
+        //const auto nY = y * bounds.getHeight();
+        
+        const auto realWidth = image.getWidth();
+        const auto realHeight = image.getHeight();
+        
+        const auto nX = (bounds.getWidth() - realWidth) / 2;
+        const auto nY = (bounds.getHeight() - realHeight) / 2;
+        
+        const auto nWidth = width * realWidth;
+        const auto nHeight = height * realHeight;
+        
+        //const auto nWidth = width * bounds.getWidth();
+        //const auto nHeight = height * bounds.getHeight();
         g.drawImage(image, { nX, nY, nWidth, nHeight });
     }
     
