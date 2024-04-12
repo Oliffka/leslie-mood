@@ -29,8 +29,8 @@ struct Image {
     {
         //const auto nY = y * bounds.getHeight();
         
-        const auto realWidth = image.getWidth();
-        const auto realHeight = image.getHeight();
+        const auto realWidth = bounds.getWidth() >  image.getWidth() ? image.getWidth() : bounds.getWidth();
+        const auto realHeight = bounds.getHeight() > image.getHeight() ? image.getHeight() : bounds.getHeight();
         
         const auto nX = (bounds.getWidth() - realWidth) / 2;
         const auto nY = (bounds.getHeight() - realHeight) / 2;

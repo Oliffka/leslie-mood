@@ -32,7 +32,7 @@ LeslieSpeakerPluginAudioProcessorEditor::LeslieSpeakerPluginAudioProcessorEditor
     const auto gifX = (this->getWidth() - gifWidth) / 2;
     const auto gifY = (this->getHeight() - gifHeight) / 2;
     
-    gifComponent->setTopLeftPosition (gifX, gifY);
+    gifComponent->setTopLeftPosition (gifX, 15);
     
     setSize (pluginGui->getWidth(), pluginGui->getHeight());
 }

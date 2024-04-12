@@ -39,7 +39,7 @@ PluginGui::PluginGui ()
     groupAILeslie->setColour (juce::GroupComponent::outlineColourId, juce::Colour (0xffc81010));
     groupAILeslie->setColour (juce::GroupComponent::textColourId, juce::Colour (0xffed5117));
 
-    groupAILeslie->setBounds (16, 24, 240, 350);
+    groupAILeslie->setBounds (128, 224, 240, 142);
 
     btnLeslie122.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (btnLeslie122.get());
@@ -47,7 +47,7 @@ PluginGui::PluginGui ()
     btnLeslie122->addListener (this);
     btnLeslie122->setColour (juce::ToggleButton::textColourId, juce::Colour (0xff431403));
 
-    btnLeslie122->setBounds (32, 56, 150, 24);
+    btnLeslie122->setBounds (152, 252, 150, 24);
 
     btnLeslie147.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (btnLeslie147.get());
@@ -55,7 +55,7 @@ PluginGui::PluginGui ()
     btnLeslie147->addListener (this);
     btnLeslie147->setColour (juce::ToggleButton::textColourId, juce::Colour (0xff3b1000));
 
-    btnLeslie147->setBounds (32, 96, 150, 24);
+    btnLeslie147->setBounds (152, 292, 150, 24);
 
     groupDelayLine.reset (new juce::GroupComponent (juce::String(),
                                                     TRANS ("Delay Line Leslie")));
@@ -63,7 +63,7 @@ PluginGui::PluginGui ()
     groupDelayLine->setColour (juce::GroupComponent::outlineColourId, juce::Colour (0xffc81010));
     groupDelayLine->setColour (juce::GroupComponent::textColourId, juce::Colour (0xffed5117));
 
-    groupDelayLine->setBounds (461, 16, 304, 526);
+    groupDelayLine->setBounds (32, 384, 456, 246);
 
     juce__slider.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (juce__slider.get());
@@ -72,7 +72,7 @@ PluginGui::PluginGui ()
     juce__slider->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     juce__slider->addListener (this);
 
-    juce__slider->setBounds (477, 59, 110, 104);
+    juce__slider->setBounds (72, 416, 67, 83);
 
     juce__slider2.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (juce__slider2.get());
@@ -81,7 +81,7 @@ PluginGui::PluginGui ()
     juce__slider2->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     juce__slider2->addListener (this);
 
-    juce__slider2->setBounds (637, 59, 110, 104);
+    juce__slider2->setBounds (64, 528, 83, 83);
 
     lblCutOff.reset (new juce::Label ("new label",
                                       TRANS ("Cut off\n")));
@@ -92,7 +92,7 @@ PluginGui::PluginGui ()
     lblCutOff->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     lblCutOff->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    lblCutOff->setBounds (498, 40, 86, 24);
+    lblCutOff->setBounds (80, 400, 86, 24);
 
     lblBalance.reset (new juce::Label ("new label",
                                        TRANS ("Bass/Treble balance\n"
@@ -104,7 +104,7 @@ PluginGui::PluginGui ()
     lblBalance->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     lblBalance->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    lblBalance->setBounds (629, 40, 142, 24);
+    lblBalance->setBounds (64, 512, 142, 24);
 
     lblBassDelay.reset (new juce::Label ("new label",
                                          TRANS ("Delay\n")));
@@ -115,18 +115,18 @@ PluginGui::PluginGui ()
     lblBassDelay->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     lblBassDelay->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    lblBassDelay->setBounds (682, 208, 86, 24);
+    lblBassDelay->setBounds (240, 520, 86, 24);
 
     lblBass.reset (new juce::Label ("new label",
-                                    TRANS ("Bass parameters\n")));
+                                    TRANS ("Bass\n")));
     addAndMakeVisible (lblBass.get());
-    lblBass->setFont (juce::Font (21.20f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    lblBass->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     lblBass->setJustificationType (juce::Justification::centredLeft);
     lblBass->setEditable (false, false, false);
     lblBass->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     lblBass->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    lblBass->setBounds (493, 171, 160, 40);
+    lblBass->setBounds (240, 389, 152, 32);
 
     lblBassLfo.reset (new juce::Label ("new label",
                                        TRANS ("LFO\n")));
@@ -137,7 +137,7 @@ PluginGui::PluginGui ()
     lblBassLfo->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     lblBassLfo->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    lblBassLfo->setBounds (498, 208, 86, 24);
+    lblBassLfo->setBounds (242, 414, 86, 24);
 
     juce__slider5.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (juce__slider5.get());
@@ -146,7 +146,7 @@ PluginGui::PluginGui ()
     juce__slider5->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     juce__slider5->addListener (this);
 
-    juce__slider5->setBounds (477, 232, 110, 104);
+    juce__slider5->setBounds (224, 432, 75, 80);
 
     juce__slider3.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (juce__slider3.get());
@@ -155,18 +155,18 @@ PluginGui::PluginGui ()
     juce__slider3->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     juce__slider3->addListener (this);
 
-    juce__slider3->setBounds (653, 232, 110, 104);
+    juce__slider3->setBounds (224, 536, 75, 80);
 
     lblHorn.reset (new juce::Label ("new label",
-                                    TRANS ("Horn parameters\n")));
+                                    TRANS ("Horn\n")));
     addAndMakeVisible (lblHorn.get());
-    lblHorn->setFont (juce::Font (21.20f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    lblHorn->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     lblHorn->setJustificationType (juce::Justification::centredLeft);
     lblHorn->setEditable (false, false, false);
     lblHorn->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     lblHorn->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    lblHorn->setBounds (493, 346, 160, 40);
+    lblHorn->setBounds (392, 387, 160, 40);
 
     lblBassDelay2.reset (new juce::Label ("new label",
                                           TRANS ("Delay\n")));
@@ -177,7 +177,7 @@ PluginGui::PluginGui ()
     lblBassDelay2->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     lblBassDelay2->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    lblBassDelay2->setBounds (682, 394, 86, 24);
+    lblBassDelay2->setBounds (384, 520, 86, 24);
 
     lblBassLfo2.reset (new juce::Label ("new label",
                                         TRANS ("LFO\n")));
@@ -188,7 +188,7 @@ PluginGui::PluginGui ()
     lblBassLfo2->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     lblBassLfo2->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    lblBassLfo2->setBounds (498, 394, 86, 24);
+    lblBassLfo2->setBounds (392, 416, 86, 24);
 
     juce__slider6.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (juce__slider6.get());
@@ -197,7 +197,7 @@ PluginGui::PluginGui ()
     juce__slider6->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     juce__slider6->addListener (this);
 
-    juce__slider6->setBounds (477, 418, 110, 104);
+    juce__slider6->setBounds (368, 432, 83, 80);
 
     juce__slider7.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (juce__slider7.get());
@@ -206,12 +206,12 @@ PluginGui::PluginGui ()
     juce__slider7->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     juce__slider7->addListener (this);
 
-    juce__slider7->setBounds (653, 418, 110, 104);
+    juce__slider7->setBounds (376, 536, 67, 80);
 
 
     //[UserPreSize]
-    backImage = juce::ImageCache::getFromMemory(BinaryData::leslie2_jpg,
-        BinaryData::leslie2_jpgSize);
+    backImage = juce::ImageCache::getFromMemory(BinaryData::leslie4_jpg,
+        BinaryData::leslie4_jpgSize);
 
     juce::ScaledImage(backImage, 2);
 
@@ -219,12 +219,12 @@ PluginGui::PluginGui ()
     btnLeslie147->setRadioGroupId (LeslieModels);
     //[/UserPreSize]
 
-    setSize (800, 800);
+    setSize (600, 400);
 
 
     //[Constructor] You can add your own custom stuff here..
-    setSize (backImage.getWidth(), backImage.getHeight());
-    setSize (800, 800);
+    setSize (backImage.getWidth()/1.7, backImage.getHeight()/1.7);
+    //setSize (800, 700);
     std::cout<<"width: " << backImage.getWidth()<<"; height: " << backImage.getHeight();
     //[/Constructor]
 }
@@ -264,8 +264,15 @@ void PluginGui::paint (juce::Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
+    g.fillAll (juce::Colour (0xff323e44));
+
     //[UserPaint] Add your own custom painting code here..
-    g.drawImageAt (backImage, 0, 0);
+    //g.drawImageAt (backImage, 0, 0);
+
+    const auto width = backImage.getWidth() / 1.7f;
+    const auto height = backImage.getHeight() / 1.7f;
+
+    g.drawImage(backImage, {0, 0, width,  height} );
     //[/UserPaint]
 }
 
@@ -359,86 +366,86 @@ BEGIN_JUCER_METADATA
                  fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="ff323e44"/>
   <GROUPCOMPONENT name="" id="2a8806637c608952" memberName="groupAILeslie" virtualName=""
-                  explicitFocusOrder="0" pos="16 24 240 350" outlinecol="ffc81010"
+                  explicitFocusOrder="0" pos="128 224 240 142" outlinecol="ffc81010"
                   textcol="ffed5117" title="AI Leslie"/>
   <TOGGLEBUTTON name="new toggle button" id="8ab70b18bcc38372" memberName="btnLeslie122"
-                virtualName="" explicitFocusOrder="0" pos="32 56 150 24" txtcol="ff431403"
+                virtualName="" explicitFocusOrder="0" pos="152 252 150 24" txtcol="ff431403"
                 buttonText="Leslie 122" connectedEdges="0" needsCallback="1"
                 radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="82500b4463aa60a8" memberName="btnLeslie147"
-                virtualName="" explicitFocusOrder="0" pos="32 96 150 24" txtcol="ff3b1000"
+                virtualName="" explicitFocusOrder="0" pos="152 292 150 24" txtcol="ff3b1000"
                 buttonText="Leslie 147" connectedEdges="0" needsCallback="1"
                 radioGroupId="0" state="0"/>
   <GROUPCOMPONENT name="" id="9c01b9be6de86113" memberName="groupDelayLine" virtualName=""
-                  explicitFocusOrder="0" pos="461 16 304 526" outlinecol="ffc81010"
+                  explicitFocusOrder="0" pos="32 384 456 246" outlinecol="ffc81010"
                   textcol="ffed5117" title="Delay Line Leslie"/>
   <SLIDER name="new slider" id="b9a6f3df0255743e" memberName="juce__slider"
-          virtualName="" explicitFocusOrder="0" pos="477 59 110 104" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="72 416 67 83" min="0.0"
           max="10.0" int="0.0" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="c8bf6f97eb2605f0" memberName="juce__slider2"
-          virtualName="" explicitFocusOrder="0" pos="637 59 110 104" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="64 528 83 83" min="0.0"
           max="10.0" int="0.0" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <LABEL name="new label" id="b6f680a685ff6e8a" memberName="lblCutOff"
-         virtualName="" explicitFocusOrder="0" pos="498 40 86 24" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="80 400 86 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Cut off&#10;" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="8f1d3a61c01f9c0d" memberName="lblBalance"
-         virtualName="" explicitFocusOrder="0" pos="629 40 142 24" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="64 512 142 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Bass/Treble balance&#10;&#10;" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="45a1f53740abae2" memberName="lblBassDelay"
-         virtualName="" explicitFocusOrder="0" pos="682 208 86 24" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="240 520 86 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Delay&#10;" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="d58eb09eabac2a84" memberName="lblBass" virtualName=""
-         explicitFocusOrder="0" pos="493 171 160 40" edTextCol="ff000000"
-         edBkgCol="0" labelText="Bass parameters&#10;" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="21.2" kerning="0.0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="240 389 152 32" edTextCol="ff000000"
+         edBkgCol="0" labelText="Bass&#10;" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
+         kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="b44cea7f90b9d0a" memberName="lblBassLfo"
-         virtualName="" explicitFocusOrder="0" pos="498 208 86 24" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="242 414 86 24" edTextCol="ff000000"
          edBkgCol="0" labelText="LFO&#10;" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
   <SLIDER name="new slider" id="f502a5581060d20e" memberName="juce__slider5"
-          virtualName="" explicitFocusOrder="0" pos="477 232 110 104" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="224 432 75 80" min="0.0"
           max="10.0" int="0.0" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="7d3aaa3df4993fb8" memberName="juce__slider3"
-          virtualName="" explicitFocusOrder="0" pos="653 232 110 104" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="224 536 75 80" min="0.0"
           max="10.0" int="0.0" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <LABEL name="new label" id="28cc27f5fd45d043" memberName="lblHorn" virtualName=""
-         explicitFocusOrder="0" pos="493 346 160 40" edTextCol="ff000000"
-         edBkgCol="0" labelText="Horn parameters&#10;" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="21.2" kerning="0.0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="392 387 160 40" edTextCol="ff000000"
+         edBkgCol="0" labelText="Horn&#10;" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
+         kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="c6c271a9ab282c1d" memberName="lblBassDelay2"
-         virtualName="" explicitFocusOrder="0" pos="682 394 86 24" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="384 520 86 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Delay&#10;" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="93968889e2d45cdb" memberName="lblBassLfo2"
-         virtualName="" explicitFocusOrder="0" pos="498 394 86 24" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="392 416 86 24" edTextCol="ff000000"
          edBkgCol="0" labelText="LFO&#10;" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
   <SLIDER name="new slider" id="4a5c225e37cc42d6" memberName="juce__slider6"
-          virtualName="" explicitFocusOrder="0" pos="477 418 110 104" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="368 432 83 80" min="0.0"
           max="10.0" int="0.0" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="9b643261e87817f1" memberName="juce__slider7"
-          virtualName="" explicitFocusOrder="0" pos="653 418 110 104" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="376 536 67 80" min="0.0"
           max="10.0" int="0.0" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>

@@ -8,17 +8,29 @@
 
 namespace BinaryData
 {
+    extern const char*   back_png;
+    const int            back_pngSize = 1664000;
+
+    extern const char*   back3_jpeg;
+    const int            back3_jpegSize = 462173;
+
+    extern const char*   back4_png;
+    const int            back4_pngSize = 3424737;
+
     extern const char*   horn_gif;
     const int            horn_gifSize = 341614;
 
-    extern const char*   leslie_jpeg;
-    const int            leslie_jpegSize = 184867;
+    extern const char*   horn2_gif;
+    const int            horn2_gifSize = 1531080;
 
-    extern const char*   leslie2_jpg;
-    const int            leslie2_jpgSize = 52167;
+    extern const char*   leslie3_jpg;
+    const int            leslie3_jpgSize = 185148;
+
+    extern const char*   leslie4_jpg;
+    const int            leslie4_jpgSize = 165069;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 3;
+    const int namedResourceListSize = 7;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
