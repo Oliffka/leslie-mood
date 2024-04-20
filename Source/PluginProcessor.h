@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include <cmath>
 
 //==============================================================================
 /**
@@ -52,8 +53,54 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+    
+    juce::AudioProcessorValueTreeState tree;
 
 private:
+    void updateFilter();
+    juce::AudioProcessorValueTreeState::ParameterLayout createParameters();
+    
+private:
     //==============================================================================
+    juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>> lowPassFilter;
+    
+    juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>> highPassFilter;
+    
+    double currentFs{44100.f};
+    
+    float curInSample{0.f}, curOutSample{0.f};
+    float prevInSample{0.f}, prevOutSample{0.f};
+    
+    float curInTrebleSample{0.f}, curOutTrebleSample{0.f};
+    float prevInTrebleSample{0.f}, prevOutTrebleSample{0.f};
+    
+    struct Modulator
+    {
+        float freq{0.f};
+        float amplitide{0.f};
+        float bias{0.f};
+        double fs{44100.f};
+        
+        float getNextValue()
+        {
+            n++;
+            auto nextValue = std::sin(2*M_PI*freq*n / fs );
+            //nextValue = 0.20 * nextValue + 0.8;
+            nextValue = amplitide * nextValue + bias;
+            return nextValue;
+        }
+        
+        void reset()
+        {
+            n = -1;
+        }
+    private:
+        int n = -1;
+        
+    };
+    
+    Modulator bassAmpModulator, trebleAmpModulator;
+    Modulator bassFreqModulator, trebleFreqModulator;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LeslieSpeakerPluginAudioProcessor)
 };

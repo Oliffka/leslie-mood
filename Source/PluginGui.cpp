@@ -65,14 +65,14 @@ PluginGui::PluginGui ()
 
     groupDelayLine->setBounds (32, 384, 456, 246);
 
-    juce__slider.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (juce__slider.get());
-    juce__slider->setRange (0, 10, 0);
-    juce__slider->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
-    juce__slider->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-    juce__slider->addListener (this);
+    sliderCutOff.reset (new juce::Slider ("new slider"));
+    addAndMakeVisible (sliderCutOff.get());
+    sliderCutOff->setRange (20, 20000, 1);
+    sliderCutOff->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    sliderCutOff->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
+    sliderCutOff->addListener (this);
 
-    juce__slider->setBounds (72, 416, 67, 83);
+    sliderCutOff->setBounds (72, 416, 67, 83);
 
     juce__slider2.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (juce__slider2.get());
@@ -221,7 +221,6 @@ PluginGui::PluginGui ()
 
     setSize (600, 400);
 
-
     //[Constructor] You can add your own custom stuff here..
     setSize (backImage.getWidth()/1.7, backImage.getHeight()/1.7);
     //setSize (800, 700);
@@ -238,7 +237,7 @@ PluginGui::~PluginGui()
     btnLeslie122 = nullptr;
     btnLeslie147 = nullptr;
     groupDelayLine = nullptr;
-    juce__slider = nullptr;
+    sliderCutOff = nullptr;
     juce__slider2 = nullptr;
     lblCutOff = nullptr;
     lblBalance = nullptr;
@@ -310,10 +309,10 @@ void PluginGui::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == juce__slider.get())
+    if (sliderThatWasMoved == sliderCutOff.get())
     {
-        //[UserSliderCode_juce__slider] -- add your slider handling code here..
-        //[/UserSliderCode_juce__slider]
+        //[UserSliderCode_sliderCutOff] -- add your slider handling code here..
+        //[/UserSliderCode_sliderCutOff]
     }
     else if (sliderThatWasMoved == juce__slider2.get())
     {
@@ -379,11 +378,11 @@ BEGIN_JUCER_METADATA
   <GROUPCOMPONENT name="" id="9c01b9be6de86113" memberName="groupDelayLine" virtualName=""
                   explicitFocusOrder="0" pos="32 384 456 246" outlinecol="ffc81010"
                   textcol="ffed5117" title="Delay Line Leslie"/>
-  <SLIDER name="new slider" id="b9a6f3df0255743e" memberName="juce__slider"
-          virtualName="" explicitFocusOrder="0" pos="72 416 67 83" min="0.0"
-          max="10.0" int="0.0" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="1"/>
+  <SLIDER name="new slider" id="b9a6f3df0255743e" memberName="sliderCutOff"
+          virtualName="" explicitFocusOrder="0" pos="72 416 67 83" min="20.0"
+          max="20000.0" int="1.0" style="RotaryHorizontalVerticalDrag"
+          textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
+          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="new slider" id="c8bf6f97eb2605f0" memberName="juce__slider2"
           virtualName="" explicitFocusOrder="0" pos="64 528 83 83" min="0.0"
           max="10.0" int="0.0" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"

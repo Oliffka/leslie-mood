@@ -44,19 +44,22 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    juce::Slider* getCutOffSlider()
+    {
+        return sliderCutOff.get();
+    }
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
     void resized() override;
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
-
-
+    
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     juce::Image backImage;
-
+    
     enum RadioButtonIds
     {
         LeslieModels = 11
@@ -68,7 +71,7 @@ private:
     std::unique_ptr<juce::ToggleButton> btnLeslie122;
     std::unique_ptr<juce::ToggleButton> btnLeslie147;
     std::unique_ptr<juce::GroupComponent> groupDelayLine;
-    std::unique_ptr<juce::Slider> juce__slider;
+    std::unique_ptr<juce::Slider> sliderCutOff;
     std::unique_ptr<juce::Slider> juce__slider2;
     std::unique_ptr<juce::Label> lblCutOff;
     std::unique_ptr<juce::Label> lblBalance;

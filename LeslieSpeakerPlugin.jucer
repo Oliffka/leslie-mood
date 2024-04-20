@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="DW8QqT" name="LeslieSpeakerPlugin" projectType="audioplug"
               useAppConfig="0" addUsingNamespaceToJuceHeader="0" displaySplashScreen="1"
-              jucerFormatVersion="1">
+              jucerFormatVersion="1" pluginManufacturer="missO">
   <MAINGROUP id="s5AtD7" name="LeslieSpeakerPlugin">
     <GROUP id="{C7B2CA11-EA44-AE5D-5D52-33081BDAC067}" name="gif_loader">
       <FILE id="l1QV52" name="jifFormat.h" compile="0" resource="0" file="Source/gif_loader/jifFormat.h"/>

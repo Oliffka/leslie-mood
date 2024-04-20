@@ -35,6 +35,8 @@ LeslieSpeakerPluginAudioProcessorEditor::LeslieSpeakerPluginAudioProcessorEditor
     gifComponent->setTopLeftPosition (gifX, 15);
     
     setSize (pluginGui->getWidth(), pluginGui->getHeight());
+    
+    cutOffAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "CUTOFF", *pluginGui->getCutOffSlider() );
 }
 
 LeslieSpeakerPluginAudioProcessorEditor::~LeslieSpeakerPluginAudioProcessorEditor()

@@ -19,7 +19,9 @@ LeslieSpeakerPluginAudioProcessor::LeslieSpeakerPluginAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ), tree(*this, nullptr, "Parameters", createParameters()), 
+lowPassFilter(juce::dsp::IIR::Coefficients<float>::makeLowPass(44100, 20000.0f, 0.1f)),
+highPassFilter(juce::dsp::IIR::Coefficients<float>::makeHighPass(44100, 20000.0f, 0.1f))
 #endif
 {
 }
@@ -93,8 +95,40 @@ void LeslieSpeakerPluginAudioProcessor::changeProgramName (int index, const juce
 //==============================================================================
 void LeslieSpeakerPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    currentFs = sampleRate;
+    
+    juce::dsp::ProcessSpec spec;
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.numChannels = getTotalNumOutputChannels();
+    
+    lowPassFilter.prepare(spec);
+    lowPassFilter.reset();
+    
+    highPassFilter.prepare(spec);
+    highPassFilter.reset();
+    
+    float modFreq = 2.f;
+    //TODO::
+    bassAmpModulator.freq = modFreq - 0.05;
+    bassAmpModulator.amplitide = 0.2f;
+    bassAmpModulator.bias = 0.8f;
+    bassAmpModulator.fs = sampleRate;
+    
+    trebleAmpModulator.freq = modFreq + 0.05;
+    trebleAmpModulator.amplitide = 0.2f;
+    trebleAmpModulator.bias = 0.8f;
+    trebleAmpModulator.fs = sampleRate;
+    
+    bassFreqModulator.freq = modFreq - 0.05;
+    bassFreqModulator.amplitide = 0.04f;
+    bassFreqModulator.bias = -0.92f;
+    bassFreqModulator.fs = sampleRate;
+    
+    trebleFreqModulator.freq = modFreq + 0.05;
+    trebleFreqModulator.amplitide = 0.2f;
+    trebleFreqModulator.bias = -0.75f;
+    trebleFreqModulator.fs = sampleRate;
 }
 
 void LeslieSpeakerPluginAudioProcessor::releaseResources()
@@ -129,6 +163,23 @@ bool LeslieSpeakerPluginAudioProcessor::isBusesLayoutSupported (const BusesLayou
 }
 #endif
 
+juce::AudioProcessorValueTreeState::ParameterLayout LeslieSpeakerPluginAudioProcessor::createParameters()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    params.push_back(std::make_unique<juce::AudioParameterFloat> ("CUTOFF", "cutoff", 20.f, 20000.f, 800.f));
+    return{ params.begin(), params.end() };
+}
+
+void LeslieSpeakerPluginAudioProcessor::updateFilter()
+{
+    float freq = *tree.getRawParameterValue("CUTOFF");
+    float res = 0.1f;
+    std::cout << "CutOff: " << freq << std::endl;
+    *lowPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeLowPass(currentFs, freq, res);
+    
+    *highPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(currentFs, freq, res);
+}
+
 void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
@@ -142,19 +193,100 @@ void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     // when they first compile a plugin, but obviously you don't need to keep
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
+        buffer.clear(i, 0, buffer.getNumSamples());
+    
+    juce::dsp::AudioBlock<const float> inputBlock(buffer);
+    
+    juce::AudioBuffer<float> outBufferLP(inputBlock.getNumChannels(), inputBlock.getNumSamples());
+    
+    juce::AudioBuffer<float> outBufferHP(inputBlock.getNumChannels(), inputBlock.getNumSamples());
+    
+    juce::dsp::AudioBlock<float> outBlockLP(outBufferLP);
+    juce::dsp::AudioBlock<float> outBlockHP(outBufferHP);
+    
+    auto contextLP = juce::dsp::ProcessContextNonReplacing<float>(inputBlock, outBlockLP);
+    auto contextHP = juce::dsp::ProcessContextNonReplacing<float>(inputBlock, outBlockHP);
+    
+    //TODO:??
+    updateFilter();
+    
+    lowPassFilter.process(contextLP);
+    highPassFilter.process(contextHP);
+    
+    //auto outBlock = context.getOutputBlock();
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+        //auto* channelData = outBlock.getChannelPointer(channel);
+    for (int sample = 0; sample < outBlockLP.getNumSamples(); ++sample)
     {
-        auto* channelData = buffer.getWritePointer (channel);
+        auto next_bass_value = bassAmpModulator.getNextValue();
+        auto next_treble_value = trebleAmpModulator.getNextValue();
+        
+        for (int channel = 0; channel < outBlockLP.getNumChannels(); ++channel)
+        {
+            std::cout << "Next bass value: " << next_bass_value << std::endl;
+            auto curSample = outBlockLP.getSample(channel, sample);
+            //std::cout << "Current lp sample: " << curSample << std::endl;
+            curSample *= next_bass_value;
+            //std::cout << "Current lp sample after modulation: " << curSample << std::endl;
+            outBlockLP.setSample(channel, sample, curSample);
+            
+            std::cout << "Next treble value: " << next_treble_value << std::endl;
+            curSample = outBlockHP.getSample(channel, sample);
+            //std::cout << "Current hp sample: " << curSample << std::endl;
+            curSample *= next_treble_value;
+            //std::cout << "Current hp sample after modulation: " << curSample << std::endl;
+            outBlockHP.setSample(channel, sample, curSample);
+            
+            //outBlockLP.add(outBlockHP);
+            //curSample = outBlockLP.getSample(channel, sample);
+            //std::cout << "Current final sample: " << curSample << std::endl;
+        }
+    }
+    
+    outBufferLP.addFrom(0, 0, outBufferLP, 1, 0, outBufferLP.getNumSamples());
+    outBufferHP.addFrom(0, 0, outBufferHP, 1, 0, outBufferHP.getNumSamples());
+    
+    buffer.copyFrom(0,0, outBufferLP, 0, 0, outBufferLP.getNumSamples());
+    buffer.copyFrom(1,0, outBufferHP, 0, 0, outBufferHP.getNumSamples());
+    buffer.applyGain(0.5f);
+    
+    float curInTrebleSample{0.f}, curOutTrebleSample{0.f};
+    float prevInTrebleSample{0.f}, prevOutTrebleSample{0.f};
+    
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+    {
+        auto next_bass_value = bassFreqModulator.getNextValue();
+        
+        curInSample = buffer.getSample (0, sample);
+        std::cout << "Current bass in sample: " << curInSample <<std::endl;
+        auto tmpCurSample = curInSample;
+        for (int cascadeLength = 0; cascadeLength < 3; cascadeLength ++)
+        {
+            curOutSample = next_bass_value * tmpCurSample + prevInSample - next_bass_value * prevOutSample;
+            tmpCurSample = curOutSample;
+        }
 
-        // ..do something to the data...
+        prevInSample = curInSample;
+        prevOutSample = curOutSample;
+        buffer.setSample(0, sample, curOutSample);
+        std::cout << "Current bass out sample: " << curOutSample <<std::endl;
+        
+        auto next_treble_value = trebleFreqModulator.getNextValue();
+        
+        curInTrebleSample = buffer.getSample (1, sample);
+        std::cout << "Current treble in sample: " << curInTrebleSample <<std::endl;
+
+        tmpCurSample = curInTrebleSample;
+        for (int cascadeLength = 0; cascadeLength < 4; cascadeLength ++)
+        {
+            curOutTrebleSample = next_treble_value * tmpCurSample + prevInTrebleSample - next_treble_value * prevOutTrebleSample;
+            tmpCurSample = curOutTrebleSample;
+        }
+
+        prevInTrebleSample = curInTrebleSample;
+        prevOutTrebleSample = curOutTrebleSample;
+        buffer.setSample(1, sample, curOutTrebleSample);
+        std::cout << "Current treble out sample: " << curOutTrebleSample <<std::endl;
     }
 }
 

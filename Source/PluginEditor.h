@@ -32,8 +32,10 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     LeslieSpeakerPluginAudioProcessor& audioProcessor;
+    
     std::unique_ptr<PluginGui> pluginGui;
     std::unique_ptr<GifComponent> gifComponent;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> cutOffAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LeslieSpeakerPluginAudioProcessorEditor)
 };
