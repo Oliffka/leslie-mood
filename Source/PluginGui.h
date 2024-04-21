@@ -48,18 +48,21 @@ public:
     {
         return sliderCutOff.get();
     }
+
+    void moveGroupsDown(int shift);
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
     void resized() override;
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
-    
+
+
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     juce::Image backImage;
-    
+
     enum RadioButtonIds
     {
         LeslieModels = 11
@@ -70,21 +73,25 @@ private:
     std::unique_ptr<juce::GroupComponent> groupAILeslie;
     std::unique_ptr<juce::ToggleButton> btnLeslie122;
     std::unique_ptr<juce::ToggleButton> btnLeslie147;
-    std::unique_ptr<juce::GroupComponent> groupDelayLine;
+    std::unique_ptr<juce::GroupComponent> groupSpectralDelay;
     std::unique_ptr<juce::Slider> sliderCutOff;
-    std::unique_ptr<juce::Slider> juce__slider2;
     std::unique_ptr<juce::Label> lblCutOff;
     std::unique_ptr<juce::Label> lblBalance;
-    std::unique_ptr<juce::Label> lblBassDelay;
-    std::unique_ptr<juce::Label> lblBass;
-    std::unique_ptr<juce::Label> lblBassLfo;
-    std::unique_ptr<juce::Slider> juce__slider5;
-    std::unique_ptr<juce::Slider> juce__slider3;
-    std::unique_ptr<juce::Label> lblHorn;
-    std::unique_ptr<juce::Label> lblBassDelay2;
-    std::unique_ptr<juce::Label> lblBassLfo2;
-    std::unique_ptr<juce::Slider> juce__slider6;
-    std::unique_ptr<juce::Slider> juce__slider7;
+    std::unique_ptr<juce::Label> lblAmplitude;
+    std::unique_ptr<juce::Label> lblStereo;
+    std::unique_ptr<juce::Label> btnR;
+    std::unique_ptr<juce::Label> btnL;
+    std::unique_ptr<juce::Slider> sliderLR;
+    std::unique_ptr<juce::GroupComponent> groupCrossOver;
+    std::unique_ptr<juce::GroupComponent> groupModulation;
+    std::unique_ptr<juce::ToggleButton> btnSlow;
+    std::unique_ptr<juce::ToggleButton> btnFast;
+    std::unique_ptr<juce::GroupComponent> groupPanPot;
+    std::unique_ptr<juce::ToggleButton> btnYes;
+    std::unique_ptr<juce::ToggleButton> btnNo;
+    std::unique_ptr<juce::Label> lblSpeed;
+    std::unique_ptr<juce::Slider> sliderAmplitude;
+    std::unique_ptr<juce::Slider> sliderBalance;
 
 
     //==============================================================================
