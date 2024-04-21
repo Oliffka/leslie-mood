@@ -24,6 +24,12 @@ lowPassFilter(juce::dsp::IIR::Coefficients<float>::makeLowPass(44100, 20000.0f, 
 highPassFilter(juce::dsp::IIR::Coefficients<float>::makeHighPass(44100, 20000.0f, 0.1f))
 #endif
 {
+    tree.addParameterListener (ParamId::cutOff, this);
+    tree.addParameterListener (ParamId::slowSpeed, this);
+    tree.addParameterListener (ParamId::balance, this);
+    tree.addParameterListener (ParamId::amplitude, this);
+    tree.addParameterListener (ParamId::stereo, this);
+    tree.addParameterListener (ParamId::panpot, this);
 }
 
 LeslieSpeakerPluginAudioProcessor::~LeslieSpeakerPluginAudioProcessor()
@@ -167,25 +173,62 @@ juce::AudioProcessorValueTreeState::ParameterLayout LeslieSpeakerPluginAudioProc
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
-    params.push_back(std::make_unique<juce::AudioParameterFloat> ("cutoff", "crossover cutoff frequency", 500.f, 2000.f, 800.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::cutOff, "crossover cutoff frequency", 500.f, 2000.f, 800.f));
     
-    params.push_back(std::make_unique<juce::AudioParameterFloat> ("balance", "bass/treble balance", 0.f, 1.f, 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::balance, "bass/treble balance", 0.f, 1.f, 0.5f));
     
-    params.push_back(std::make_unique<juce::AudioParameterFloat> ("amplitude", "amplitude modulation", 0.f, 0.9f, 0.7f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::amplitude, "amplitude modulation", 0.f, 0.9f, 0.7f));
     
-    params.push_back(std::make_unique<juce::AudioParameterFloat> ("panpot", "left/right channels balance", 0.f, 1.f, 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::panpot, "left/right channels balance", 0.f, 1.f, 0.5f));
     
-    params.push_back(std::make_unique<juce::AudioParameterBool> ("slowSpeed", "rotation speed is slow", true));
+    params.push_back(std::make_unique<juce::AudioParameterBool> (ParamId::slowSpeed, "rotation speed is slow", true));
     
-    params.push_back(std::make_unique<juce::AudioParameterBool> ("stereo", "bass/treble stereo", false));
+    params.push_back(std::make_unique<juce::AudioParameterBool> (ParamId::stereo, "bass/treble stereo", false));
     
     return{ params.begin(), params.end() };
 }
 
 float LeslieSpeakerPluginAudioProcessor::getLFO() const
 {
-    bool slowSpeedParam = *tree.getRawParameterValue("slowSpeed");
-    return slowSpeedParam ? slowSpeed : fastSpeed;
+    bool slowSpeedParam = *tree.getRawParameterValue(ParamId::slowSpeed);
+    return getLFO(slowSpeedParam);
+}
+
+float LeslieSpeakerPluginAudioProcessor::getLFO(bool slowSpeedParameter) const
+{
+    return slowSpeedParameter ? slowSpeed : fastSpeed;
+}
+
+void LeslieSpeakerPluginAudioProcessor::parameterChanged (const juce::String& parameterID, float newValue)
+{
+    if (parameterID == ParamId::cutOff)
+    {
+        float freq = newValue;
+        float res = 0.1f;
+        
+        *lowPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeLowPass(currentFs, freq, res);
+        
+        *highPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(currentFs, freq, res);
+    }
+    else if (parameterID == ParamId::slowSpeed)
+    {
+        int value = static_cast<int>(newValue);
+        
+        const auto lfo = getLFO(value == 1);
+        
+        bassAmpModulator.changeFreq(lfo - 0.05f);
+        bassFreqModulator.changeFreq(lfo - 0.05f);
+        
+        trebleAmpModulator.changeFreq(lfo + 0.05f);
+        trebleFreqModulator.changeFreq(lfo + 0.05f);
+    }
+    /*tree.addParameterListener ("cutoff", this);
+    tree.addParameterListener ("slowSpeed", this);
+    tree.addParameterListener ("balance", this);
+    tree.addParameterListener ("amplitude", this);
+    tree.addParameterListener ("stereo", this);
+    tree.addParameterListener ("panpot", this);
+    updateFilter();*/
 }
 
 
@@ -238,7 +281,7 @@ void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     auto contextHP = juce::dsp::ProcessContextNonReplacing<float>(inputBlock, outBlockHP);
     
     //TODO:??
-    updateFilter();
+    //updateFilter();
     
     lowPassFilter.process(contextLP);
     highPassFilter.process(contextHP);

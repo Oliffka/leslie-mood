@@ -14,7 +14,8 @@
 //==============================================================================
 /**
 */
-class LeslieSpeakerPluginAudioProcessor  : public juce::AudioProcessor
+class LeslieSpeakerPluginAudioProcessor : public juce::AudioProcessor,
+                                          public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
@@ -53,6 +54,7 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+    void parameterChanged (const juce::String& parameterID, float newValue) override;
     
     juce::AudioProcessorValueTreeState tree;
 
@@ -75,6 +77,7 @@ private:
     float prevInTrebleSample{0.f}, prevOutTrebleSample{0.f};
     
     float getLFO() const;
+    float getLFO(bool) const;
     
     struct Modulator
     {
@@ -105,6 +108,16 @@ private:
     private:
         int n = -1;
         
+    };
+    
+    struct ParamId
+    {
+        static const inline juce::String cutOff{"cutoff"};
+        static const inline juce::String balance{"balance"};
+        static const inline juce::String slowSpeed{"slowSpeed"};
+        static const inline juce::String amplitude{"amplitude"};
+        static const inline juce::String stereo{"stereo"};
+        static const inline juce::String panpot{"panpot"};
     };
     
     Modulator bassAmpModulator, trebleAmpModulator;
