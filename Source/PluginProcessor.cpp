@@ -114,27 +114,25 @@ void LeslieSpeakerPluginAudioProcessor::prepareToPlay (double sampleRate, int sa
     highPassFilter.prepare(spec);
     highPassFilter.reset();
     
+    float cutoff = *tree.getRawParameterValue("cutoff");
+    updateCutoff(cutoff);
+    
     float modFreq = getLFO();
-    //TODO::
-    bassAmpModulator.freq = modFreq - 0.05;
-    bassAmpModulator.amplitide = 0.2f;
-    bassAmpModulator.bias = 0.8f;
+    updateRotationSpeed(modFreq);
+    
     bassAmpModulator.fs = sampleRate;
-    
-    trebleAmpModulator.freq = modFreq + 0.05;
-    trebleAmpModulator.amplitide = 0.2f;
-    trebleAmpModulator.bias = 0.8f;
     trebleAmpModulator.fs = sampleRate;
+    bassFreqModulator.fs = sampleRate;
+    trebleFreqModulator.fs = sampleRate;
     
-    bassFreqModulator.freq = modFreq - 0.05;
+    float amplitude = *tree.getRawParameterValue("amplitude");
+    updateAmplitude(amplitude);
+    
     bassFreqModulator.amplitide = 0.04f;
     bassFreqModulator.bias = -0.92f;
-    bassFreqModulator.fs = sampleRate;
     
-    trebleFreqModulator.freq = modFreq + 0.05;
     trebleFreqModulator.amplitide = 0.2f;
     trebleFreqModulator.bias = -0.75f;
-    trebleFreqModulator.fs = sampleRate;
 }
 
 void LeslieSpeakerPluginAudioProcessor::releaseResources()
@@ -203,34 +201,44 @@ void LeslieSpeakerPluginAudioProcessor::parameterChanged (const juce::String& pa
 {
     if (parameterID == ParamId::cutOff)
     {
-        float freq = newValue;
-        float res = 0.1f;
-        
-        *lowPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeLowPass(currentFs, freq, res);
-        
-        *highPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(currentFs, freq, res);
+        updateCutoff(newValue);
     }
     else if (parameterID == ParamId::slowSpeed)
     {
-        int value = static_cast<int>(newValue);
-        
-        const auto lfo = getLFO(value == 1);
-        
-        bassAmpModulator.changeFreq(lfo - 0.05f);
-        bassFreqModulator.changeFreq(lfo - 0.05f);
-        
-        trebleAmpModulator.changeFreq(lfo + 0.05f);
-        trebleFreqModulator.changeFreq(lfo + 0.05f);
+        updateRotationSpeed(getLFO(static_cast<int>(newValue) == 1));
     }
-    /*tree.addParameterListener ("cutoff", this);
-    tree.addParameterListener ("slowSpeed", this);
-    tree.addParameterListener ("balance", this);
-    tree.addParameterListener ("amplitude", this);
-    tree.addParameterListener ("stereo", this);
-    tree.addParameterListener ("panpot", this);
-    updateFilter();*/
+    else if (parameterID == ParamId::amplitude)
+    {
+        updateAmplitude(newValue);
+    }
 }
 
+void LeslieSpeakerPluginAudioProcessor::updateCutoff(float newCutoff)
+{
+    float qFactor = 0.1f;
+    
+    *lowPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeLowPass(currentFs, newCutoff, qFactor);
+    
+    *highPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(currentFs, newCutoff, qFactor);
+}
+
+void LeslieSpeakerPluginAudioProcessor::updateAmplitude(float bottomLimit)
+{
+    const auto amplitude = (1 - bottomLimit) / 2;
+    const auto bias = bottomLimit + amplitude;
+    
+    bassAmpModulator.changeAmplitudeBias(amplitude, bias);
+    trebleAmpModulator.changeAmplitudeBias(amplitude, bias);
+}
+
+void LeslieSpeakerPluginAudioProcessor::updateRotationSpeed(float newLfo)
+{
+    bassAmpModulator.changeFreq(newLfo - 0.05f);
+    bassFreqModulator.changeFreq(newLfo - 0.05f);
+    
+    trebleAmpModulator.changeFreq(newLfo + 0.05f);
+    trebleFreqModulator.changeFreq(newLfo + 0.05f);
+}
 
 void LeslieSpeakerPluginAudioProcessor::updateFilter()
 {

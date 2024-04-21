@@ -70,3 +70,7 @@ void LeslieSpeakerPluginAudioProcessorEditor::resized()
     // subcomponents in your editor..
 }
 
+void LeslieSpeakerPluginAudioProcessorEditor::updateGifSpeed(bool isSlow)
+{
+    gifComponent->setRotationSpeed(isSlow);
+}

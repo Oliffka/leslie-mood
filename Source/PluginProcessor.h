@@ -79,6 +79,10 @@ private:
     float getLFO() const;
     float getLFO(bool) const;
     
+    void updateCutoff(float);
+    void updateAmplitude(float);
+    void updateRotationSpeed(float);
+    
     struct Modulator
     {
         float freq{0.f};
@@ -99,6 +103,13 @@ private:
         {
             reset();
             freq = newFreq;
+        }
+        
+        void changeAmplitudeBias(float newAmp, float newBias)
+        {
+            reset();
+            amplitide = newAmp;
+            bias = newBias;
         }
         
         void reset()

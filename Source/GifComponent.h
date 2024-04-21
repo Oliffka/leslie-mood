@@ -12,6 +12,8 @@ public:
     void timerCallback() override;
     void resized() override;
     
+    void setRotationSpeed(bool slowSpeed);
+    
 private:
     jif::JifObject jifObj;
 

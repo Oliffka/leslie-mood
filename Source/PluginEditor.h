@@ -18,7 +18,7 @@
 class PluginGui;
 class GifComponent;
 
-class LeslieSpeakerPluginAudioProcessorEditor  : public juce::AudioProcessorEditor
+class LeslieSpeakerPluginAudioProcessorEditor  : public juce::AudioProcessorEditor,
 {
 public:
     LeslieSpeakerPluginAudioProcessorEditor (LeslieSpeakerPluginAudioProcessor&);
@@ -27,6 +27,8 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    
+    void updateGifSpeed(bool isSlow);
 
 private:
     // This reference is provided as a quick way for your editor to
