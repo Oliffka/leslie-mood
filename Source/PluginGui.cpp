@@ -240,6 +240,15 @@ PluginGui::PluginGui ()
 
     btnLeslie122->setRadioGroupId (LeslieModels);
     btnLeslie147->setRadioGroupId (LeslieModels);
+    btnLeslie122->setToggleState(true, juce::NotificationType::dontSendNotification);
+    
+    btnSlow->setRadioGroupId (RotationSpeed);
+    btnFast->setRadioGroupId (RotationSpeed);
+    btnSlow->setToggleState(true, juce::NotificationType::dontSendNotification);
+    
+    btnYes->setRadioGroupId (StereoOutput);
+    btnNo->setRadioGroupId (StereoOutput);
+    btnNo->setToggleState(true, juce::NotificationType::dontSendNotification);
     //[/UserPreSize]
 
     setSize (600, 400);
@@ -279,8 +288,7 @@ PluginGui::~PluginGui()
     lblSpeed = nullptr;
     sliderAmplitude = nullptr;
     sliderBalance = nullptr;
-
-
+    
     //[Destructor]. You can add your own custom destruction code here..
     //[/Destructor]
 }

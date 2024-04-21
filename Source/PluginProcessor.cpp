@@ -108,7 +108,7 @@ void LeslieSpeakerPluginAudioProcessor::prepareToPlay (double sampleRate, int sa
     highPassFilter.prepare(spec);
     highPassFilter.reset();
     
-    float modFreq = 2.f;
+    float modFreq = getLFO();
     //TODO::
     bassAmpModulator.freq = modFreq - 0.05;
     bassAmpModulator.amplitide = 0.2f;
@@ -166,18 +166,48 @@ bool LeslieSpeakerPluginAudioProcessor::isBusesLayoutSupported (const BusesLayou
 juce::AudioProcessorValueTreeState::ParameterLayout LeslieSpeakerPluginAudioProcessor::createParameters()
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
-    params.push_back(std::make_unique<juce::AudioParameterFloat> ("CUTOFF", "cutoff", 20.f, 20000.f, 800.f));
+    
+    params.push_back(std::make_unique<juce::AudioParameterFloat> ("cutoff", "crossover cutoff frequency", 500.f, 2000.f, 800.f));
+    
+    params.push_back(std::make_unique<juce::AudioParameterFloat> ("balance", "bass/treble balance", 0.f, 1.f, 0.5f));
+    
+    params.push_back(std::make_unique<juce::AudioParameterFloat> ("amplitude", "amplitude modulation", 0.f, 0.9f, 0.7f));
+    
+    params.push_back(std::make_unique<juce::AudioParameterFloat> ("panpot", "left/right channels balance", 0.f, 1.f, 0.5f));
+    
+    params.push_back(std::make_unique<juce::AudioParameterBool> ("slowSpeed", "rotation speed is slow", true));
+    
+    params.push_back(std::make_unique<juce::AudioParameterBool> ("stereo", "bass/treble stereo", false));
+    
     return{ params.begin(), params.end() };
 }
 
+float LeslieSpeakerPluginAudioProcessor::getLFO() const
+{
+    bool slowSpeedParam = *tree.getRawParameterValue("slowSpeed");
+    return slowSpeedParam ? slowSpeed : fastSpeed;
+}
+
+
 void LeslieSpeakerPluginAudioProcessor::updateFilter()
 {
-    float freq = *tree.getRawParameterValue("CUTOFF");
+    float freq = *tree.getRawParameterValue("cutoff");
     float res = 0.1f;
-    std::cout << "CutOff: " << freq << std::endl;
+    
     *lowPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeLowPass(currentFs, freq, res);
     
     *highPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(currentFs, freq, res);
+    
+    const auto lfo = getLFO();
+    
+    bassAmpModulator.changeFreq(lfo - 0.05f);
+    bassFreqModulator.changeFreq(lfo - 0.05f);
+    
+    trebleAmpModulator.changeFreq(lfo + 0.05f);
+    trebleFreqModulator.changeFreq(lfo + 0.05f);
+    
+    bool stereoParam = *tree.getRawParameterValue("stereo");
+    bool slowSpeedParam = *tree.getRawParameterValue("slowSpeed");
 }
 
 void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
@@ -250,6 +280,7 @@ void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     buffer.copyFrom(1,0, outBufferHP, 0, 0, outBufferHP.getNumSamples());
     buffer.applyGain(0.5f);
     
+    /*
     float curInTrebleSample{0.f}, curOutTrebleSample{0.f};
     float prevInTrebleSample{0.f}, prevOutTrebleSample{0.f};
     
@@ -287,7 +318,7 @@ void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& 
         prevOutTrebleSample = curOutTrebleSample;
         buffer.setSample(1, sample, curOutTrebleSample);
         std::cout << "Current treble out sample: " << curOutTrebleSample <<std::endl;
-    }
+    }*/
 }
 
 //==============================================================================
@@ -304,15 +335,18 @@ juce::AudioProcessorEditor* LeslieSpeakerPluginAudioProcessor::createEditor()
 //==============================================================================
 void LeslieSpeakerPluginAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    auto state = tree.copyState();
+    std::unique_ptr<juce::XmlElement> xml (state.createXml());
+    copyXmlToBinary (*xml, destData);
 }
 
 void LeslieSpeakerPluginAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+
+    if (xmlState.get() != nullptr)
+        if (xmlState->hasTagName (tree.state.getType()))
+            tree.replaceState (juce::ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

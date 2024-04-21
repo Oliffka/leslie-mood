@@ -74,6 +74,8 @@ private:
     float curInTrebleSample{0.f}, curOutTrebleSample{0.f};
     float prevInTrebleSample{0.f}, prevOutTrebleSample{0.f};
     
+    float getLFO() const;
+    
     struct Modulator
     {
         float freq{0.f};
@@ -90,6 +92,12 @@ private:
             return nextValue;
         }
         
+        void changeFreq(float newFreq)
+        {
+            reset();
+            freq = newFreq;
+        }
+        
         void reset()
         {
             n = -1;
@@ -101,6 +109,9 @@ private:
     
     Modulator bassAmpModulator, trebleAmpModulator;
     Modulator bassFreqModulator, trebleFreqModulator;
+    
+    const float slowSpeed{2.f};
+    const float fastSpeed{6.f};
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LeslieSpeakerPluginAudioProcessor)
 };

@@ -48,6 +48,31 @@ public:
     {
         return sliderCutOff.get();
     }
+    
+    juce::Slider* getBalanceSlider()
+    {
+        return sliderBalance.get();
+    }
+    
+    juce::Slider* getAmplitudeSlider()
+    {
+        return sliderAmplitude.get();
+    }
+    
+    juce::Slider* getLRSlider()
+    {
+        return sliderLR.get();
+    }
+    
+    juce::ToggleButton* getSlowButton()
+    {
+        return btnSlow.get();
+    }
+    
+    juce::ToggleButton* getStereoButton()
+    {
+        return btnYes.get();
+    }
 
     void moveGroupsDown(int shift);
     //[/UserMethods]
@@ -57,15 +82,15 @@ public:
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
 
-
-
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     juce::Image backImage;
 
     enum RadioButtonIds
     {
-        LeslieModels = 11
+        LeslieModels = 1,
+        RotationSpeed = 2,
+        StereoOutput = 3
     };
     //[/UserVariables]
 
@@ -92,7 +117,6 @@ private:
     std::unique_ptr<juce::Label> lblSpeed;
     std::unique_ptr<juce::Slider> sliderAmplitude;
     std::unique_ptr<juce::Slider> sliderBalance;
-
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginGui)

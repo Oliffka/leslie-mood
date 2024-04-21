@@ -36,8 +36,18 @@ LeslieSpeakerPluginAudioProcessorEditor::LeslieSpeakerPluginAudioProcessorEditor
     
     setSize (pluginGui->getWidth(), pluginGui->getHeight());
     
-    cutOffAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "CUTOFF", *pluginGui->getCutOffSlider() );
-}
+    cutOffAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "cutoff", *pluginGui->getCutOffSlider() );
+
+    balanceAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "balance", *pluginGui->getBalanceSlider() );
+    
+    amplitudeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "amplitude", *pluginGui->getAmplitudeSlider() );
+    
+    panPotAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "panpot", *pluginGui->getLRSlider() );
+    
+    speedAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.tree, "slowSpeed", *pluginGui->getSlowButton() );
+    
+    stereoAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.tree, "stereo", *pluginGui->getStereoButton() );
+    }
 
 LeslieSpeakerPluginAudioProcessorEditor::~LeslieSpeakerPluginAudioProcessorEditor()
 {
