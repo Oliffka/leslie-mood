@@ -63,9 +63,9 @@ private:
     
 private:
     //==============================================================================
-    juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>> lowPassFilter;
     
-    juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>> highPassFilter;
+    juce::dsp::LinkwitzRileyFilter<float> lowPassFilter, highPassFilter;
+
     
     double currentFs{44100.f};
     

@@ -19,9 +19,7 @@ LeslieSpeakerPluginAudioProcessor::LeslieSpeakerPluginAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       ), tree(*this, nullptr, "Parameters", createParameters()), 
-lowPassFilter(juce::dsp::IIR::Coefficients<float>::makeLowPass(44100, 20000.0f, 0.1f)),
-highPassFilter(juce::dsp::IIR::Coefficients<float>::makeHighPass(44100, 20000.0f, 0.1f))
+                       ), tree(*this, nullptr, "Parameters", createParameters())
 #endif
 {
     tree.addParameterListener (ParamId::cutOff, this);
@@ -30,6 +28,9 @@ highPassFilter(juce::dsp::IIR::Coefficients<float>::makeHighPass(44100, 20000.0f
     tree.addParameterListener (ParamId::amplitude, this);
     tree.addParameterListener (ParamId::stereo, this);
     tree.addParameterListener (ParamId::panpot, this);
+    
+    lowPassFilter.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
+    highPassFilter.setType(juce::dsp::LinkwitzRileyFilterType::highpass);
 }
 
 LeslieSpeakerPluginAudioProcessor::~LeslieSpeakerPluginAudioProcessor()
@@ -180,7 +181,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout LeslieSpeakerPluginAudioProc
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
-    params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::cutOff, "crossover cutoff frequency", 500.f, 2000.f, 800.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::cutOff, "crossover cutoff frequency", 500.f, 5000.f, 800.f));
     
     params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::balance, "bass/treble balance", 0.f, 1.f, 0.5f));
     
@@ -228,11 +229,8 @@ void LeslieSpeakerPluginAudioProcessor::parameterChanged(const juce::String& par
 
 void LeslieSpeakerPluginAudioProcessor::updateCutoff(float newCutoff)
 {
-    float qFactor = 0.1f;
-    
-    *lowPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeLowPass(currentFs, newCutoff, qFactor);
-    
-    *highPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(currentFs, newCutoff, qFactor);
+    lowPassFilter.setCutoffFrequency(newCutoff);
+    highPassFilter.setCutoffFrequency(newCutoff);
 }
 
 void LeslieSpeakerPluginAudioProcessor::updateAmplitude(float bottomLimit)
@@ -349,8 +347,6 @@ void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& 
         
         buffer.copyFrom(0,0, outBufferHP, 0, 0, outBufferHP.getNumSamples());
         buffer.copyFrom(1,0, outBufferHP, 1, 0, outBufferHP.getNumSamples());
-        
-        buffer.applyGain(2.f);
     }
 }
 
