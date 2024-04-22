@@ -13,7 +13,7 @@ GifComponent::GifComponent() :
 
 void GifComponent::setRotationSpeed(bool slowSpeed)
 {
-    startTimerHz(slowSpeed ? 20 : 40);
+    startTimerHz(slowSpeed ? 15 : 40);
 }
 
 void GifComponent::paint (juce::Graphics& g) { jifObj.paint(g, getLocalBounds().toFloat()); }

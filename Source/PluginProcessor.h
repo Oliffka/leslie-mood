@@ -134,6 +134,8 @@ private:
     Modulator bassAmpModulator, trebleAmpModulator;
     Modulator bassFreqModulator, trebleFreqModulator;
     
+    juce::dsp::DryWetMixer<float> dwMixer{0};
+    
     const float slowSpeed{2.f};
     const float fastSpeed{6.f};
     
