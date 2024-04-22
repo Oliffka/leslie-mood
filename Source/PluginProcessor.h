@@ -59,7 +59,6 @@ public:
     juce::AudioProcessorValueTreeState tree;
 
 private:
-    void updateFilter();
     juce::AudioProcessorValueTreeState::ParameterLayout createParameters();
     
 private:

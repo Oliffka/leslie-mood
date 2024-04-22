@@ -139,6 +139,9 @@ void LeslieSpeakerPluginAudioProcessor::prepareToPlay (double sampleRate, int sa
     
     trebleFreqModulator.amplitide = 0.2f;
     trebleFreqModulator.bias = -0.75f;
+    
+    curInSample = 0.f, curOutSample = 0.f;
+    prevInSample = 0.f, prevOutSample = 0.f;
 }
 
 void LeslieSpeakerPluginAudioProcessor::releaseResources()
@@ -250,27 +253,6 @@ void LeslieSpeakerPluginAudioProcessor::updateRotationSpeed(float newLfo)
     trebleFreqModulator.changeFreq(newLfo + 0.05f);
 }
 
-void LeslieSpeakerPluginAudioProcessor::updateFilter()
-{
-    float freq = *tree.getRawParameterValue("cutoff");
-    float res = 0.1f;
-    
-    *lowPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeLowPass(currentFs, freq, res);
-    
-    *highPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(currentFs, freq, res);
-    
-    const auto lfo = getLFO();
-    
-    bassAmpModulator.changeFreq(lfo - 0.05f);
-    bassFreqModulator.changeFreq(lfo - 0.05f);
-    
-    trebleAmpModulator.changeFreq(lfo + 0.05f);
-    trebleFreqModulator.changeFreq(lfo + 0.05f);
-    
-    bool stereoParam = *tree.getRawParameterValue("stereo");
-    bool slowSpeedParam = *tree.getRawParameterValue("slowSpeed");
-}
-
 void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
@@ -341,19 +323,35 @@ void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& 
             prevInTrebleSample = curInTrebleSample;
             prevOutTrebleSample = curOutTrebleSample;
             
+            //Treble Amplitude modulation
             curOutTrebleSample *= next_treble_amp;
             outBlockHP.setSample(channel, sample, curOutTrebleSample);
         }
     }
     
-    dwMixer.pushDrySamples(outBlockLP);
-    dwMixer.mixWetSamples(outBlockHP);
+    float stereo = *tree.getRawParameterValue(ParamId::stereo);
+    const bool splitBassTreble = static_cast<int>(stereo) == 1;
     
-    
-    buffer.copyFrom(0,0, outBufferHP, 0, 0, outBufferHP.getNumSamples());
-    buffer.copyFrom(1,0, outBufferHP, 1, 0, outBufferHP.getNumSamples());
-    
-    buffer.applyGain(1.5f);
+    if (splitBassTreble)
+    {
+        buffer.copyFrom(0,0, outBufferLP, 0, 0, outBufferLP.getNumSamples());
+        buffer.addFrom(0,0, outBufferLP, 1, 0, outBufferLP.getNumSamples());
+        
+        buffer.copyFrom(1,0, outBufferHP, 0, 0, outBufferHP.getNumSamples());
+        buffer.addFrom(1,0, outBufferHP, 1, 0, outBufferHP.getNumSamples());
+        
+        //buffer.applyGain(0.5f);
+    }
+    else
+    {
+        dwMixer.pushDrySamples(outBlockLP);
+        dwMixer.mixWetSamples(outBlockHP);
+        
+        buffer.copyFrom(0,0, outBufferHP, 0, 0, outBufferHP.getNumSamples());
+        buffer.copyFrom(1,0, outBufferHP, 1, 0, outBufferHP.getNumSamples());
+        
+        buffer.applyGain(2.f);
+    }
 }
 
 //==============================================================================
