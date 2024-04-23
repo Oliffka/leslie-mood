@@ -281,6 +281,9 @@ void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     lowPassFilter.process(contextLP);
     highPassFilter.process(contextHP);
     
+    int filterOrderBass = *tree.getRawParameterValue(ParamId::bassFilterOrder);
+    int filterOrderTreble = *tree.getRawParameterValue(ParamId::trebleFilterOrder);
+    
     for (int sample = 0; sample < outBlockLP.getNumSamples(); ++sample)
     {
         auto next_bass_amp = bassAmpModulator.getNextValue();
@@ -295,7 +298,7 @@ void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& 
             curInSample = outBlockLP.getSample(channel, sample);
 
             auto tmpCurSample = curInSample;
-            for (int cascadeLength = 0; cascadeLength < 3; cascadeLength ++)
+            for (int cascadeLength = 0; cascadeLength < filterOrderBass; cascadeLength ++)
             {
                 curOutSample = next_bass_freq * tmpCurSample + prevInSample - next_bass_freq * prevOutSample;
                 tmpCurSample = curOutSample;
@@ -312,7 +315,7 @@ void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& 
             curInTrebleSample = outBlockHP.getSample(channel, sample);
 
             tmpCurSample = curInTrebleSample;
-            for (int cascadeLength = 0; cascadeLength < 4; cascadeLength ++)
+            for (int cascadeLength = 0; cascadeLength < filterOrderTreble; cascadeLength ++)
             {
                 curOutTrebleSample = next_treble_freq * tmpCurSample + prevInTrebleSample - next_treble_freq * prevOutTrebleSample;
                 tmpCurSample = curOutTrebleSample;

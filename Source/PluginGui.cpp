@@ -223,7 +223,6 @@ PluginGui::PluginGui ()
 
     btnSlow->setRadioGroupId (RotationSpeed);
     btnFast->setRadioGroupId (RotationSpeed);
-    btnSlow->setToggleState(true, juce::NotificationType::dontSendNotification);
     //[/UserPreSize]
 
     setSize (600, 400);
