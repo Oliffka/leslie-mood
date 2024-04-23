@@ -26,8 +26,8 @@ LeslieSpeakerPluginAudioProcessor::LeslieSpeakerPluginAudioProcessor()
     tree.addParameterListener (ParamId::slowSpeed, this);
     tree.addParameterListener (ParamId::balance, this);
     tree.addParameterListener (ParamId::amplitude, this);
-    tree.addParameterListener (ParamId::stereo, this);
-    tree.addParameterListener (ParamId::panpot, this);
+    tree.addParameterListener (ParamId::bassFilterOrder, this);
+    tree.addParameterListener (ParamId::trebleFilterOrder, this);
     
     lowPassFilter.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
     highPassFilter.setType(juce::dsp::LinkwitzRileyFilterType::highpass);
@@ -187,11 +187,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout LeslieSpeakerPluginAudioProc
     
     params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::amplitude, "amplitude modulation", 0.f, 0.9f, 0.7f));
     
-    params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::panpot, "left/right channels balance", 0.f, 1.f, 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterInt> (ParamId::bassFilterOrder, "SDF filter's order for bass modulation", 1, 5, 3));
+    
+    params.push_back(std::make_unique<juce::AudioParameterInt> (ParamId::trebleFilterOrder, "SDF filter's order for treble modulation", 1, 5, 4));
     
     params.push_back(std::make_unique<juce::AudioParameterBool> (ParamId::slowSpeed, "rotation speed is slow", true));
-    
-    params.push_back(std::make_unique<juce::AudioParameterBool> (ParamId::stereo, "bass/treble stereo", false));
     
     return{ params.begin(), params.end() };
 }
@@ -327,27 +327,11 @@ void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& 
         }
     }
     
-    float stereo = *tree.getRawParameterValue(ParamId::stereo);
-    const bool splitBassTreble = static_cast<int>(stereo) == 1;
+    dwMixer.pushDrySamples(outBlockLP);
+    dwMixer.mixWetSamples(outBlockHP);
     
-    if (splitBassTreble)
-    {
-        buffer.copyFrom(0,0, outBufferLP, 0, 0, outBufferLP.getNumSamples());
-        buffer.addFrom(0,0, outBufferLP, 1, 0, outBufferLP.getNumSamples());
-        
-        buffer.copyFrom(1,0, outBufferHP, 0, 0, outBufferHP.getNumSamples());
-        buffer.addFrom(1,0, outBufferHP, 1, 0, outBufferHP.getNumSamples());
-        
-        //buffer.applyGain(0.5f);
-    }
-    else
-    {
-        dwMixer.pushDrySamples(outBlockLP);
-        dwMixer.mixWetSamples(outBlockHP);
-        
-        buffer.copyFrom(0,0, outBufferHP, 0, 0, outBufferHP.getNumSamples());
-        buffer.copyFrom(1,0, outBufferHP, 1, 0, outBufferHP.getNumSamples());
-    }
+    buffer.copyFrom(0,0, outBufferHP, 0, 0, outBufferHP.getNumSamples());
+    buffer.copyFrom(1,0, outBufferHP, 1, 0, outBufferHP.getNumSamples());
 }
 
 //==============================================================================

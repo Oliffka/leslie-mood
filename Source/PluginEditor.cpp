@@ -42,11 +42,11 @@ LeslieSpeakerPluginAudioProcessorEditor::LeslieSpeakerPluginAudioProcessorEditor
     
     amplitudeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "amplitude", *pluginGui->getAmplitudeSlider() );
     
-    panPotAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "panpot", *pluginGui->getLRSlider() );
+    bassFilterOrderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "bassFilterOrder", *pluginGui->getBassFilterSlider() );
+    
+    trebleFilterOrderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "trebleFilterOrder", *pluginGui->getTrebleFilterSlider() );
     
     speedAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.tree, "slowSpeed", *pluginGui->getSlowButton() );
-    
-    stereoAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.tree, "stereo", *pluginGui->getStereoButton() );
     
     pluginGui->getSlowButton()->addListener(this);
 }

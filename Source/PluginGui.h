@@ -48,30 +48,30 @@ public:
     {
         return sliderCutOff.get();
     }
-    
+
     juce::Slider* getBalanceSlider()
     {
         return sliderBalance.get();
     }
-    
+
     juce::Slider* getAmplitudeSlider()
     {
         return sliderAmplitude.get();
     }
-    
-    juce::Slider* getLRSlider()
+
+    juce::Slider* getBassFilterSlider()
     {
-        return sliderLR.get();
+        return sliderBassFilter.get();
     }
-    
+
+    juce::Slider* getTrebleFilterSlider()
+    {
+        return sliderTrebleFilter.get();
+    }
+
     juce::ToggleButton* getSlowButton()
     {
         return btnSlow.get();
-    }
-    
-    juce::ToggleButton* getStereoButton()
-    {
-        return btnYes.get();
     }
 
     void moveGroupsDown(int shift);
@@ -81,6 +81,8 @@ public:
     void resized() override;
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+
+
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
@@ -103,20 +105,18 @@ private:
     std::unique_ptr<juce::Label> lblCutOff;
     std::unique_ptr<juce::Label> lblBalance;
     std::unique_ptr<juce::Label> lblAmplitude;
-    std::unique_ptr<juce::Label> lblStereo;
-    std::unique_ptr<juce::Label> btnR;
-    std::unique_ptr<juce::Label> btnL;
-    std::unique_ptr<juce::Slider> sliderLR;
+    std::unique_ptr<juce::Label> lblBassFilter;
+    std::unique_ptr<juce::Slider> sliderTrebleFilter;
     std::unique_ptr<juce::GroupComponent> groupCrossOver;
     std::unique_ptr<juce::GroupComponent> groupModulation;
     std::unique_ptr<juce::ToggleButton> btnSlow;
     std::unique_ptr<juce::ToggleButton> btnFast;
-    std::unique_ptr<juce::GroupComponent> groupPanPot;
-    std::unique_ptr<juce::ToggleButton> btnYes;
-    std::unique_ptr<juce::ToggleButton> btnNo;
     std::unique_ptr<juce::Label> lblSpeed;
     std::unique_ptr<juce::Slider> sliderAmplitude;
     std::unique_ptr<juce::Slider> sliderBalance;
+    std::unique_ptr<juce::Label> lblTrebleFilter;
+    std::unique_ptr<juce::Slider> sliderBassFilter;
+
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginGui)

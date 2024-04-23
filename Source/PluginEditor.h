@@ -44,9 +44,9 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> cutOffAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> balanceAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> amplitudeAttachment;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> panPotAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> bassFilterOrderAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> trebleFilterOrderAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> speedAttachment;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> stereoAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LeslieSpeakerPluginAudioProcessorEditor)
 };

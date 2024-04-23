@@ -13,6 +13,8 @@ public:
     void resized() override;
     
     void setRotationSpeed(bool slowSpeed);
+    void startAnimation(bool slowSpeed);
+    void stopAnimation();
     
 private:
     jif::JifObject jifObj;

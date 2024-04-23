@@ -8,7 +8,7 @@ GifComponent::GifComponent() :
     int width  = jifObj.getWidth() > 0 ? jifObj.getWidth() : 600;
     int height  = jifObj.getHeight() > 0 ? jifObj.getHeight() : 400;
     setSize(width/1.32, height/1.32);
-    setRotationSpeed(true);
+    startAnimation(true);
 }
 
 void GifComponent::setRotationSpeed(bool slowSpeed)
@@ -16,8 +16,36 @@ void GifComponent::setRotationSpeed(bool slowSpeed)
     startTimerHz(slowSpeed ? 15 : 40);
 }
 
-void GifComponent::paint (juce::Graphics& g) { jifObj.paint(g, getLocalBounds().toFloat()); }
+void GifComponent::startAnimation(bool slowSpeed)
+{
+    if (!isTimerRunning())
+    {
+        setRotationSpeed(slowSpeed);
+    }
+}
 
-void GifComponent::timerCallback() { ++jifObj; repaint(); }
+void GifComponent::stopAnimation()
+{
+    if (isTimerRunning())
+    {
+        stopTimer();
+        jifObj.resetAnimation();
+        repaint();
+    }
+}
 
-void GifComponent::resized() { jifObj.resetAnimation(); }
+void GifComponent::paint (juce::Graphics& g) 
+{
+    jifObj.paint(g, getLocalBounds().toFloat());
+}
+
+void GifComponent::timerCallback() 
+{
+    ++jifObj;
+    repaint();
+}
+
+void GifComponent::resized() 
+{
+    jifObj.resetAnimation();
+}

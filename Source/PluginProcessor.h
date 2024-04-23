@@ -126,8 +126,8 @@ private:
         static const inline juce::String balance{"balance"};
         static const inline juce::String slowSpeed{"slowSpeed"};
         static const inline juce::String amplitude{"amplitude"};
-        static const inline juce::String stereo{"stereo"};
-        static const inline juce::String panpot{"panpot"};
+        static const inline juce::String bassFilterOrder{"bassFilterOrder"};
+        static const inline juce::String trebleFilterOrder{"trebleFilterOrder"};
     };
     
     Modulator bassAmpModulator, trebleAmpModulator;

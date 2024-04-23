@@ -63,7 +63,7 @@ PluginGui::PluginGui ()
     groupSpectralDelay->setColour (juce::GroupComponent::outlineColourId, juce::Colour (0xffc81010));
     groupSpectralDelay->setColour (juce::GroupComponent::textColourId, juce::Colour (0xfff57b4f));
 
-    groupSpectralDelay->setBounds (14, 203, 479, 302);
+    groupSpectralDelay->setBounds (15, 203, 479, 313);
 
     sliderCutOff.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (sliderCutOff.get());
@@ -106,70 +106,51 @@ PluginGui::PluginGui ()
     lblAmplitude->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     lblAmplitude->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    lblAmplitude->setBounds (201, 332, 94, 48);
+    lblAmplitude->setBounds (201, 351, 94, 48);
 
-    lblStereo.reset (new juce::Label ("new label",
-                                      TRANS ("Bass/Treble Stereo")));
-    addAndMakeVisible (lblStereo.get());
-    lblStereo->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    lblStereo->setJustificationType (juce::Justification::centredLeft);
-    lblStereo->setEditable (false, false, false);
-    lblStereo->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    lblStereo->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    lblBassFilter.reset (new juce::Label ("new label",
+                                          TRANS ("Bass filter order")));
+    addAndMakeVisible (lblBassFilter.get());
+    lblBassFilter->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    lblBassFilter->setJustificationType (juce::Justification::centredLeft);
+    lblBassFilter->setEditable (false, false, false);
+    lblBassFilter->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    lblBassFilter->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    lblStereo->setBounds (352, 234, 120, 40);
+    lblBassFilter->setBounds (352, 234, 120, 40);
 
-    btnR.reset (new juce::Label ("new label",
-                                 TRANS ("R")));
-    addAndMakeVisible (btnR.get());
-    btnR->setFont (juce::Font (20.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    btnR->setJustificationType (juce::Justification::centredLeft);
-    btnR->setEditable (false, false, false);
-    btnR->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    btnR->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    sliderTrebleFilter.reset (new juce::Slider ("new slider"));
+    addAndMakeVisible (sliderTrebleFilter.get());
+    sliderTrebleFilter->setRange (1, 5, 1);
+    sliderTrebleFilter->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    sliderTrebleFilter->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
+    sliderTrebleFilter->addListener (this);
 
-    btnR->setBounds (446, 344, 22, 24);
-
-    btnL.reset (new juce::Label ("new label",
-                                 TRANS ("L\n")));
-    addAndMakeVisible (btnL.get());
-    btnL->setFont (juce::Font (20.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    btnL->setJustificationType (juce::Justification::centredLeft);
-    btnL->setEditable (false, false, false);
-    btnL->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    btnL->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    btnL->setBounds (358, 344, 22, 24);
-
-    sliderLR.reset (new juce::Slider ("new slider"));
-    addAndMakeVisible (sliderLR.get());
-    sliderLR->setRange (0, 1, 0.001);
-    sliderLR->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
-    sliderLR->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
-    sliderLR->addListener (this);
-
-    sliderLR->setBounds (364, 370, 99, 96);
+    sliderTrebleFilter->setBounds (364, 383, 99, 96);
 
     groupCrossOver.reset (new juce::GroupComponent (juce::String(),
                                                     TRANS ("CrossOver")));
     addAndMakeVisible (groupCrossOver.get());
+    groupCrossOver->setTextLabelPosition (juce::Justification::centred);
     groupCrossOver->setColour (juce::GroupComponent::outlineColourId, juce::Colour (0xffe68c6c));
     groupCrossOver->setColour (juce::GroupComponent::textColourId, juce::Colour (0xfff57b4f));
 
-    groupCrossOver->setBounds (27, 226, 151, 262);
+    groupCrossOver->setBounds (27, 227, 151, 268);
 
     groupModulation.reset (new juce::GroupComponent (juce::String(),
                                                      TRANS ("Modulation")));
     addAndMakeVisible (groupModulation.get());
+    groupModulation->setTextLabelPosition (juce::Justification::centred);
     groupModulation->setColour (juce::GroupComponent::outlineColourId, juce::Colour (0xffe68c6c));
     groupModulation->setColour (juce::GroupComponent::textColourId, juce::Colour (0xfff57b4f));
 
-    groupModulation->setBounds (185, 226, 144, 262);
+    groupModulation->setBounds (184, 224, 297, 270);
 
     btnSlow.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (btnSlow.get());
     btnSlow->setButtonText (TRANS ("Slow"));
     btnSlow->addListener (this);
+    btnSlow->setToggleState (true, juce::dontSendNotification);
 
     btnSlow->setBounds (193, 282, 62, 24);
 
@@ -180,28 +161,6 @@ PluginGui::PluginGui ()
 
     btnFast->setBounds (265, 282, 62, 24);
 
-    groupPanPot.reset (new juce::GroupComponent (juce::String(),
-                                                 TRANS ("Pan-Pot")));
-    addAndMakeVisible (groupPanPot.get());
-    groupPanPot->setColour (juce::GroupComponent::outlineColourId, juce::Colour (0xffe68c6c));
-    groupPanPot->setColour (juce::GroupComponent::textColourId, juce::Colour (0xfff57b4f));
-
-    groupPanPot->setBounds (336, 226, 144, 262);
-
-    btnYes.reset (new juce::ToggleButton ("new toggle button"));
-    addAndMakeVisible (btnYes.get());
-    btnYes->setButtonText (TRANS ("Yes"));
-    btnYes->addListener (this);
-
-    btnYes->setBounds (357, 282, 62, 24);
-
-    btnNo.reset (new juce::ToggleButton ("new toggle button"));
-    addAndMakeVisible (btnNo.get());
-    btnNo->setButtonText (TRANS ("No"));
-    btnNo->addListener (this);
-
-    btnNo->setBounds (425, 282, 62, 24);
-
     lblSpeed.reset (new juce::Label ("new label",
                                      TRANS ("Rotation speed\n")));
     addAndMakeVisible (lblSpeed.get());
@@ -211,7 +170,7 @@ PluginGui::PluginGui ()
     lblSpeed->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     lblSpeed->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    lblSpeed->setBounds (194, 234, 112, 40);
+    lblSpeed->setBounds (196, 234, 112, 40);
 
     sliderAmplitude.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (sliderAmplitude.get());
@@ -220,7 +179,7 @@ PluginGui::PluginGui ()
     sliderAmplitude->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     sliderAmplitude->addListener (this);
 
-    sliderAmplitude->setBounds (205, 370, 99, 96);
+    sliderAmplitude->setBounds (205, 383, 99, 96);
 
     sliderBalance.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (sliderBalance.get());
@@ -230,6 +189,26 @@ PluginGui::PluginGui ()
     sliderBalance->addListener (this);
 
     sliderBalance->setBounds (50, 370, 99, 96);
+
+    lblTrebleFilter.reset (new juce::Label ("new label",
+                                            TRANS ("Treble filter order ")));
+    addAndMakeVisible (lblTrebleFilter.get());
+    lblTrebleFilter->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    lblTrebleFilter->setJustificationType (juce::Justification::centredLeft);
+    lblTrebleFilter->setEditable (false, false, false);
+    lblTrebleFilter->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    lblTrebleFilter->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+
+    lblTrebleFilter->setBounds (352, 354, 120, 40);
+
+    sliderBassFilter.reset (new juce::Slider ("new slider"));
+    addAndMakeVisible (sliderBassFilter.get());
+    sliderBassFilter->setRange (1, 5, 1);
+    sliderBassFilter->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    sliderBassFilter->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
+    sliderBassFilter->addListener (this);
+
+    sliderBassFilter->setBounds (356, 259, 99, 96);
 
 
     //[UserPreSize]
@@ -241,14 +220,10 @@ PluginGui::PluginGui ()
     btnLeslie122->setRadioGroupId (LeslieModels);
     btnLeslie147->setRadioGroupId (LeslieModels);
     btnLeslie122->setToggleState(true, juce::NotificationType::dontSendNotification);
-    
+
     btnSlow->setRadioGroupId (RotationSpeed);
     btnFast->setRadioGroupId (RotationSpeed);
     btnSlow->setToggleState(true, juce::NotificationType::dontSendNotification);
-    
-    btnYes->setRadioGroupId (StereoOutput);
-    btnNo->setRadioGroupId (StereoOutput);
-    btnNo->setToggleState(true, juce::NotificationType::dontSendNotification);
     //[/UserPreSize]
 
     setSize (600, 400);
@@ -274,21 +249,19 @@ PluginGui::~PluginGui()
     lblCutOff = nullptr;
     lblBalance = nullptr;
     lblAmplitude = nullptr;
-    lblStereo = nullptr;
-    btnR = nullptr;
-    btnL = nullptr;
-    sliderLR = nullptr;
+    lblBassFilter = nullptr;
+    sliderTrebleFilter = nullptr;
     groupCrossOver = nullptr;
     groupModulation = nullptr;
     btnSlow = nullptr;
     btnFast = nullptr;
-    groupPanPot = nullptr;
-    btnYes = nullptr;
-    btnNo = nullptr;
     lblSpeed = nullptr;
     sliderAmplitude = nullptr;
     sliderBalance = nullptr;
-    
+    lblTrebleFilter = nullptr;
+    sliderBassFilter = nullptr;
+
+
     //[Destructor]. You can add your own custom destruction code here..
     //[/Destructor]
 }
@@ -345,16 +318,6 @@ void PluginGui::buttonClicked (juce::Button* buttonThatWasClicked)
         //[UserButtonCode_btnFast] -- add your button handler code here..
         //[/UserButtonCode_btnFast]
     }
-    else if (buttonThatWasClicked == btnYes.get())
-    {
-        //[UserButtonCode_btnYes] -- add your button handler code here..
-        //[/UserButtonCode_btnYes]
-    }
-    else if (buttonThatWasClicked == btnNo.get())
-    {
-        //[UserButtonCode_btnNo] -- add your button handler code here..
-        //[/UserButtonCode_btnNo]
-    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -370,10 +333,10 @@ void PluginGui::sliderValueChanged (juce::Slider* sliderThatWasMoved)
         //[UserSliderCode_sliderCutOff] -- add your slider handling code here..
         //[/UserSliderCode_sliderCutOff]
     }
-    else if (sliderThatWasMoved == sliderLR.get())
+    else if (sliderThatWasMoved == sliderTrebleFilter.get())
     {
-        //[UserSliderCode_sliderLR] -- add your slider handling code here..
-        //[/UserSliderCode_sliderLR]
+        //[UserSliderCode_sliderTrebleFilter] -- add your slider handling code here..
+        //[/UserSliderCode_sliderTrebleFilter]
     }
     else if (sliderThatWasMoved == sliderAmplitude.get())
     {
@@ -384,6 +347,11 @@ void PluginGui::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     {
         //[UserSliderCode_sliderBalance] -- add your slider handling code here..
         //[/UserSliderCode_sliderBalance]
+    }
+    else if (sliderThatWasMoved == sliderBassFilter.get())
+    {
+        //[UserSliderCode_sliderBassFilter] -- add your slider handling code here..
+        //[/UserSliderCode_sliderBassFilter]
     }
 
     //[UsersliderValueChanged_Post]
@@ -408,17 +376,14 @@ void PluginGui::moveGroupsDown(int shift)
     moveLambda(lblCutOff.get());
     moveLambda(lblBalance.get());
     moveLambda(lblAmplitude.get());
-    moveLambda(lblStereo.get());
-    moveLambda(btnR.get());
-    moveLambda(btnL.get());
-    moveLambda(sliderLR.get());
+    moveLambda(sliderBassFilter.get());
+    moveLambda(sliderTrebleFilter.get());
+    moveLambda(lblBassFilter.get());
+    moveLambda(lblTrebleFilter.get());
     moveLambda(groupCrossOver.get());
     moveLambda(groupModulation.get());
     moveLambda(btnSlow.get());
     moveLambda(btnFast.get());
-    moveLambda(groupPanPot.get());
-    moveLambda(btnYes.get());
-    moveLambda(btnNo.get());
     moveLambda(lblSpeed.get());
     moveLambda(sliderAmplitude.get());
     moveLambda(sliderBalance.get());
@@ -452,7 +417,7 @@ BEGIN_JUCER_METADATA
                 buttonText="Leslie 147" connectedEdges="0" needsCallback="1"
                 radioGroupId="0" state="0"/>
   <GROUPCOMPONENT name="" id="9c01b9be6de86113" memberName="groupSpectralDelay"
-                  virtualName="" explicitFocusOrder="0" pos="14 203 479 302" outlinecol="ffc81010"
+                  virtualName="" explicitFocusOrder="0" pos="15 203 479 313" outlinecol="ffc81010"
                   textcol="fff57b4f" title="Spectral Delay Leslie"/>
   <SLIDER name="new slider" id="b9a6f3df0255743e" memberName="sliderCutOff"
           virtualName="" explicitFocusOrder="0" pos="65 274 67 51" min="500.0"
@@ -470,64 +435,55 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="b44cea7f90b9d0a" memberName="lblAmplitude"
-         virtualName="" explicitFocusOrder="0" pos="201 332 94 48" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="201 351 94 48" edTextCol="ff000000"
          edBkgCol="0" labelText="Amp modulation" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="17.0" kerning="0.0" bold="0" italic="0" justification="33"/>
-  <LABEL name="new label" id="28cc27f5fd45d043" memberName="lblStereo"
+  <LABEL name="new label" id="28cc27f5fd45d043" memberName="lblBassFilter"
          virtualName="" explicitFocusOrder="0" pos="352 234 120 40" edTextCol="ff000000"
-         edBkgCol="0" labelText="Bass/Treble Stereo" editableSingleClick="0"
+         edBkgCol="0" labelText="Bass filter order" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
-  <LABEL name="new label" id="c6c271a9ab282c1d" memberName="btnR" virtualName=""
-         explicitFocusOrder="0" pos="446 344 22 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="R" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="20.0"
-         kerning="0.0" bold="0" italic="0" justification="33"/>
-  <LABEL name="new label" id="93968889e2d45cdb" memberName="btnL" virtualName=""
-         explicitFocusOrder="0" pos="358 344 22 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="L&#10;" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="20.0"
-         kerning="0.0" bold="0" italic="0" justification="33"/>
-  <SLIDER name="new slider" id="4a5c225e37cc42d6" memberName="sliderLR"
-          virtualName="" explicitFocusOrder="0" pos="364 370 99 96" min="0.0"
-          max="1.0" int="0.001" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
+  <SLIDER name="new slider" id="4a5c225e37cc42d6" memberName="sliderTrebleFilter"
+          virtualName="" explicitFocusOrder="0" pos="364 383 99 96" min="1.0"
+          max="5.0" int="1.0" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <GROUPCOMPONENT name="" id="4fbfcdfeb1768a78" memberName="groupCrossOver" virtualName=""
-                  explicitFocusOrder="0" pos="27 226 151 262" outlinecol="ffe68c6c"
-                  textcol="fff57b4f" title="CrossOver"/>
+                  explicitFocusOrder="0" pos="27 227 151 268" outlinecol="ffe68c6c"
+                  textcol="fff57b4f" title="CrossOver" textpos="36"/>
   <GROUPCOMPONENT name="" id="147275323f01ae0d" memberName="groupModulation" virtualName=""
-                  explicitFocusOrder="0" pos="185 226 144 262" outlinecol="ffe68c6c"
-                  textcol="fff57b4f" title="Modulation"/>
+                  explicitFocusOrder="0" pos="184 224 297 270" outlinecol="ffe68c6c"
+                  textcol="fff57b4f" title="Modulation" textpos="36"/>
   <TOGGLEBUTTON name="new toggle button" id="99298539cc161620" memberName="btnSlow"
                 virtualName="" explicitFocusOrder="0" pos="193 282 62 24" buttonText="Slow"
-                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="1"/>
   <TOGGLEBUTTON name="new toggle button" id="d575001c780ce13c" memberName="btnFast"
                 virtualName="" explicitFocusOrder="0" pos="265 282 62 24" buttonText="Fast"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
-  <GROUPCOMPONENT name="" id="b12ad3fd1e93352d" memberName="groupPanPot" virtualName=""
-                  explicitFocusOrder="0" pos="336 226 144 262" outlinecol="ffe68c6c"
-                  textcol="fff57b4f" title="Pan-Pot"/>
-  <TOGGLEBUTTON name="new toggle button" id="3241366c6224a686" memberName="btnYes"
-                virtualName="" explicitFocusOrder="0" pos="357 282 62 24" buttonText="Yes"
-                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
-  <TOGGLEBUTTON name="new toggle button" id="3db61d684d7fc270" memberName="btnNo"
-                virtualName="" explicitFocusOrder="0" pos="425 282 62 24" buttonText="No"
-                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <LABEL name="new label" id="796b9d5120a2b76" memberName="lblSpeed" virtualName=""
-         explicitFocusOrder="0" pos="194 234 112 40" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="196 234 112 40" edTextCol="ff000000"
          edBkgCol="0" labelText="Rotation speed&#10;" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <SLIDER name="new slider" id="b333c53b21fc68d8" memberName="sliderAmplitude"
-          virtualName="" explicitFocusOrder="0" pos="205 370 99 96" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="205 383 99 96" min="0.0"
           max="0.9" int="0.001" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="1530f04e789f3465" memberName="sliderBalance"
           virtualName="" explicitFocusOrder="0" pos="50 370 99 96" min="0.0"
           max="1.0" int="0.001" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
+  <LABEL name="new label" id="b76237b74c7ac3b2" memberName="lblTrebleFilter"
+         virtualName="" explicitFocusOrder="0" pos="352 354 120 40" edTextCol="ff000000"
+         edBkgCol="0" labelText="Treble filter order " editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
+  <SLIDER name="new slider" id="d540644b8010163e" memberName="sliderBassFilter"
+          virtualName="" explicitFocusOrder="0" pos="356 259 99 96" min="1.0"
+          max="5.0" int="1.0" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
 </JUCER_COMPONENT>
