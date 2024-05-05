@@ -74,7 +74,7 @@ public:
     {
         return speedSwitch.get();
     }
-    
+
     juce::Button* getAnimationSwitchButton()
     {
         return animationSwitch.get();
@@ -88,6 +88,8 @@ public:
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
 
+
+
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     juce::Image backImage;
@@ -96,7 +98,8 @@ private:
     {
         LeslieModels = 1
     };
-    
+
+    std::unique_ptr<juce::Label> lblAnimation;
     std::unique_ptr<jux::SwitchButton> animationSwitch;
     std::unique_ptr<jux::SwitchButton> speedSwitch;
     //[/UserVariables]
@@ -119,6 +122,7 @@ private:
     std::unique_ptr<juce::Slider> sliderBalance;
     std::unique_ptr<juce::Label> lblTrebleFilter;
     std::unique_ptr<juce::Slider> sliderBassFilter;
+
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginGui)

@@ -209,6 +209,7 @@ PluginGui::PluginGui ()
 
     setSize (600, 400);
 
+
     //[Constructor] You can add your own custom stuff here..
     setSize (backImage.getWidth()/1.7, backImage.getHeight()/1.7);
     moveGroupsDown(190);
@@ -218,6 +219,16 @@ PluginGui::PluginGui ()
     //0xFFE68C6C
     //0xFFF57B4F
     
+    lblAnimation.reset (new juce::Label ("lblAnimation",
+                                      TRANS ("Animation")));
+    addAndMakeVisible (lblAnimation.get());
+    lblAnimation->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    lblAnimation->setJustificationType (juce::Justification::centredLeft);
+    lblAnimation->setEditable (false, false, false);
+    lblAnimation->setColour (juce::Label::textColourId, juce::Colour (0xFFE68C6C));
+
+    lblAnimation->setBounds (410, 225, 120, 24);
+    
     animationSwitch.reset (new jux::SwitchButton ("animationSwitch", false, false));
     animationSwitch->setColors(juce::Colour{ 0xFFE68C6C }, juce::Colour{ 0xFF431403}.withAlpha(0.5f), juce::Colours::transparentWhite, juce::Colours::transparentWhite);
     animationSwitch->setOnText("ON");
@@ -225,7 +236,7 @@ PluginGui::PluginGui ()
     animationSwitch->setTopLeftPosition (415, 250);
     animationSwitch->setSize(65, 30);
     addAndMakeVisible(animationSwitch.get());
-    
+
     speedSwitch.reset (new jux::SwitchButton ("speedSwitch", false, false));
     //speedSwitch->setColors(juce::Colours::white, juce::Colour{ 0xFF431403}, juce::Colours::transparentWhite, juce::Colours::transparentWhite);
     speedSwitch->setOnText("SLOW");
@@ -442,12 +453,6 @@ BEGIN_JUCER_METADATA
   <GROUPCOMPONENT name="" id="147275323f01ae0d" memberName="groupModulation" virtualName=""
                   explicitFocusOrder="0" pos="184 224 297 270" outlinecol="ffe68c6c"
                   textcol="fff57b4f" title="Modulation" textpos="36"/>
-  <TOGGLEBUTTON name="new toggle button" id="99298539cc161620" memberName="btnSlow"
-                virtualName="" explicitFocusOrder="0" pos="193 282 62 24" buttonText="Slow"
-                connectedEdges="0" needsCallback="1" radioGroupId="0" state="1"/>
-  <TOGGLEBUTTON name="new toggle button" id="d575001c780ce13c" memberName="btnFast"
-                virtualName="" explicitFocusOrder="0" pos="265 282 62 24" buttonText="Fast"
-                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <LABEL name="new label" id="796b9d5120a2b76" memberName="lblSpeed" virtualName=""
          explicitFocusOrder="0" pos="196 234 112 40" edTextCol="ff000000"
          edBkgCol="0" labelText="Rotation speed&#10;" editableSingleClick="0"
