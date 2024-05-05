@@ -21,6 +21,7 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include <JuceHeader.h>
+#include "./custom/SwitchButton.h"
 //[/Headers]
 
 
@@ -69,9 +70,14 @@ public:
         return sliderTrebleFilter.get();
     }
 
-    juce::ToggleButton* getSlowButton()
+    juce::Button* getSpeedButton()
     {
-        return btnSlow.get();
+        return speedSwitch.get();
+    }
+    
+    juce::Button* getAnimationSwitchButton()
+    {
+        return animationSwitch.get();
     }
 
     void moveGroupsDown(int shift);
@@ -82,18 +88,17 @@ public:
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
 
-
-
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     juce::Image backImage;
 
     enum RadioButtonIds
     {
-        LeslieModels = 1,
-        RotationSpeed = 2,
-        StereoOutput = 3
+        LeslieModels = 1
     };
+    
+    std::unique_ptr<jux::SwitchButton> animationSwitch;
+    std::unique_ptr<jux::SwitchButton> speedSwitch;
     //[/UserVariables]
 
     //==============================================================================
@@ -109,14 +114,11 @@ private:
     std::unique_ptr<juce::Slider> sliderTrebleFilter;
     std::unique_ptr<juce::GroupComponent> groupCrossOver;
     std::unique_ptr<juce::GroupComponent> groupModulation;
-    std::unique_ptr<juce::ToggleButton> btnSlow;
-    std::unique_ptr<juce::ToggleButton> btnFast;
     std::unique_ptr<juce::Label> lblSpeed;
     std::unique_ptr<juce::Slider> sliderAmplitude;
     std::unique_ptr<juce::Slider> sliderBalance;
     std::unique_ptr<juce::Label> lblTrebleFilter;
     std::unique_ptr<juce::Slider> sliderBassFilter;
-
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginGui)

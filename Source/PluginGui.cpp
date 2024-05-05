@@ -146,21 +146,6 @@ PluginGui::PluginGui ()
 
     groupModulation->setBounds (184, 224, 297, 270);
 
-    btnSlow.reset (new juce::ToggleButton ("new toggle button"));
-    addAndMakeVisible (btnSlow.get());
-    btnSlow->setButtonText (TRANS ("Slow"));
-    btnSlow->addListener (this);
-    btnSlow->setToggleState (true, juce::dontSendNotification);
-
-    btnSlow->setBounds (193, 282, 62, 24);
-
-    btnFast.reset (new juce::ToggleButton ("new toggle button"));
-    addAndMakeVisible (btnFast.get());
-    btnFast->setButtonText (TRANS ("Fast"));
-    btnFast->addListener (this);
-
-    btnFast->setBounds (265, 282, 62, 24);
-
     lblSpeed.reset (new juce::Label ("new label",
                                      TRANS ("Rotation speed\n")));
     addAndMakeVisible (lblSpeed.get());
@@ -220,18 +205,34 @@ PluginGui::PluginGui ()
     btnLeslie122->setRadioGroupId (LeslieModels);
     btnLeslie147->setRadioGroupId (LeslieModels);
     btnLeslie122->setToggleState(true, juce::NotificationType::dontSendNotification);
-
-    btnSlow->setRadioGroupId (RotationSpeed);
-    btnFast->setRadioGroupId (RotationSpeed);
     //[/UserPreSize]
 
     setSize (600, 400);
-
 
     //[Constructor] You can add your own custom stuff here..
     setSize (backImage.getWidth()/1.7, backImage.getHeight()/1.7);
     moveGroupsDown(190);
     std::cout<<"width: " << backImage.getWidth()<<"; height: " << backImage.getHeight();
+
+    //0xFFC81010
+    //0xFFE68C6C
+    //0xFFF57B4F
+    
+    animationSwitch.reset (new jux::SwitchButton ("animationSwitch", false, false));
+    animationSwitch->setColors(juce::Colour{ 0xFFE68C6C }, juce::Colour{ 0xFF431403}.withAlpha(0.5f), juce::Colours::transparentWhite, juce::Colours::transparentWhite);
+    animationSwitch->setOnText("ON");
+    animationSwitch->setOffText("OFF");
+    animationSwitch->setTopLeftPosition (415, 250);
+    animationSwitch->setSize(65, 30);
+    addAndMakeVisible(animationSwitch.get());
+    
+    speedSwitch.reset (new jux::SwitchButton ("speedSwitch", false, false));
+    //speedSwitch->setColors(juce::Colours::white, juce::Colour{ 0xFF431403}, juce::Colours::transparentWhite, juce::Colours::transparentWhite);
+    speedSwitch->setOnText("SLOW");
+    speedSwitch->setOffText("FAST");
+    speedSwitch->setTopLeftPosition (198, 472);
+    speedSwitch->setSize(85, 35);
+    addAndMakeVisible(speedSwitch.get());
     //[/Constructor]
 }
 
@@ -252,8 +253,6 @@ PluginGui::~PluginGui()
     sliderTrebleFilter = nullptr;
     groupCrossOver = nullptr;
     groupModulation = nullptr;
-    btnSlow = nullptr;
-    btnFast = nullptr;
     lblSpeed = nullptr;
     sliderAmplitude = nullptr;
     sliderBalance = nullptr;
@@ -262,6 +261,7 @@ PluginGui::~PluginGui()
 
 
     //[Destructor]. You can add your own custom destruction code here..
+    animationSwitch = nullptr;
     //[/Destructor]
 }
 
@@ -306,16 +306,6 @@ void PluginGui::buttonClicked (juce::Button* buttonThatWasClicked)
     {
         //[UserButtonCode_btnLeslie147] -- add your button handler code here..
         //[/UserButtonCode_btnLeslie147]
-    }
-    else if (buttonThatWasClicked == btnSlow.get())
-    {
-        //[UserButtonCode_btnSlow] -- add your button handler code here..
-        //[/UserButtonCode_btnSlow]
-    }
-    else if (buttonThatWasClicked == btnFast.get())
-    {
-        //[UserButtonCode_btnFast] -- add your button handler code here..
-        //[/UserButtonCode_btnFast]
     }
 
     //[UserbuttonClicked_Post]
@@ -381,8 +371,6 @@ void PluginGui::moveGroupsDown(int shift)
     moveLambda(lblTrebleFilter.get());
     moveLambda(groupCrossOver.get());
     moveLambda(groupModulation.get());
-    moveLambda(btnSlow.get());
-    moveLambda(btnFast.get());
     moveLambda(lblSpeed.get());
     moveLambda(sliderAmplitude.get());
     moveLambda(sliderBalance.get());

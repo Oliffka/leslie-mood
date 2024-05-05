@@ -46,9 +46,10 @@ LeslieSpeakerPluginAudioProcessorEditor::LeslieSpeakerPluginAudioProcessorEditor
     
     trebleFilterOrderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "trebleFilterOrder", *pluginGui->getTrebleFilterSlider() );
     
-    speedAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.tree, "slowSpeed", *pluginGui->getSlowButton() );
+    speedAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.tree, "slowSpeed", *pluginGui->getSpeedButton() );
     
-    pluginGui->getSlowButton()->addListener(this);
+    pluginGui->getSpeedButton()->addListener(this);
+    pluginGui->getAnimationSwitchButton()->addListener(this);
 }
 
 LeslieSpeakerPluginAudioProcessorEditor::~LeslieSpeakerPluginAudioProcessorEditor()
@@ -85,7 +86,22 @@ void LeslieSpeakerPluginAudioProcessorEditor::buttonClicked (juce::Button* butto
 void LeslieSpeakerPluginAudioProcessorEditor::buttonStateChanged (juce::Button* button)
 {
     // Here it's assumed that processorEditor is listening to only one button - rotationSpeed
-    
-    bool isSlow = pluginGui->getSlowButton()->getToggleState();
-    updateGifSpeed(isSlow);
+    if (button == pluginGui->getSpeedButton())
+    {
+        bool isSlow = pluginGui->getSpeedButton()->getToggleState();
+        updateGifSpeed(isSlow);
+    }
+    else if (button == pluginGui->getAnimationSwitchButton())
+    {
+        bool isOn = pluginGui->getAnimationSwitchButton()->getToggleState();
+        if (isOn)
+        {
+            bool isSlow = pluginGui->getSpeedButton()->getToggleState();
+            gifComponent->startAnimation(isSlow);
+        }
+        else
+        {
+            gifComponent->stopAnimation();
+        }
+    }
 }

@@ -18,8 +18,9 @@
 class PluginGui;
 class GifComponent;
 
-class LeslieSpeakerPluginAudioProcessorEditor  : public juce::AudioProcessorEditor,
-                                                 public juce::Button::Listener
+class LeslieSpeakerPluginAudioProcessorEditor  : 
+    public juce::AudioProcessorEditor,
+    public juce::Button::Listener
 {
 public:
     LeslieSpeakerPluginAudioProcessorEditor (LeslieSpeakerPluginAudioProcessor&);

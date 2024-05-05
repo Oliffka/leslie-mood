@@ -4,6 +4,10 @@
               useAppConfig="0" addUsingNamespaceToJuceHeader="0" displaySplashScreen="1"
               jucerFormatVersion="1" pluginManufacturer="missO">
   <MAINGROUP id="s5AtD7" name="LeslieSpeakerPlugin">
+    <GROUP id="{6F668138-914B-AE66-74E3-D958D306F9DB}" name="custom">
+      <FILE id="FbuzqX" name="SwitchButton.h" compile="0" resource="0" file="Source/custom/SwitchButton.h"/>
+      <FILE id="wU3EiI" name="utils.h" compile="0" resource="0" file="Source/custom/utils.h"/>
+    </GROUP>
     <GROUP id="{C7B2CA11-EA44-AE5D-5D52-33081BDAC067}" name="gif_loader">
       <FILE id="l1QV52" name="jifFormat.h" compile="0" resource="0" file="Source/gif_loader/jifFormat.h"/>
       <FILE id="pow5pA" name="jifImage.hpp" compile="0" resource="0" file="Source/gif_loader/jifImage.hpp"/>
