@@ -13,11 +13,12 @@ public:
     void resized() override;
     
     void setRotationSpeed(bool slowSpeed);
-    void startAnimation(bool slowSpeed);
+    void startAnimation();
     void stopAnimation();
     
 private:
+    int getRotationSpeed(bool isSlowMode) const;
     jif::JifObject jifObj;
-
+    int currentSpeed{0};
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GifComponent)
 };

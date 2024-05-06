@@ -238,7 +238,7 @@ PluginGui::PluginGui ()
     addAndMakeVisible(animationSwitch.get());
 
     speedSwitch.reset (new jux::SwitchButton ("speedSwitch", false, false));
-    //speedSwitch->setColors(juce::Colours::white, juce::Colour{ 0xFF431403}, juce::Colours::transparentWhite, juce::Colours::transparentWhite);
+    speedSwitch->setColors(juce::Colours::white, juce::Colour{ 0xFF431403}, juce::Colours::transparentWhite, juce::Colours::transparentWhite);
     speedSwitch->setOnText("SLOW");
     speedSwitch->setOffText("FAST");
     speedSwitch->setTopLeftPosition (198, 472);

@@ -96,8 +96,7 @@ void LeslieSpeakerPluginAudioProcessorEditor::buttonStateChanged (juce::Button* 
         bool isOn = pluginGui->getAnimationSwitchButton()->getToggleState();
         if (isOn)
         {
-            bool isSlow = pluginGui->getSpeedButton()->getToggleState();
-            gifComponent->startAnimation(isSlow);
+            gifComponent->startAnimation();
         }
         else
         {

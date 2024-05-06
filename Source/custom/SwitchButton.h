@@ -28,7 +28,6 @@
 
 #pragma once
 
-#include "utils.h"
 #include "JuceHeader.h"
 
 namespace jux
@@ -44,20 +43,9 @@ namespace jux
 class SwitchButton : public juce::Button
 {
 public:
-    enum ColourIds
-    {
-        switchColour = 0x1B06000,
-        switchOnBackgroundColour = 0x1B06001,
-        switchOffBackgroundColour = 0x1B06002,
-        switchBorderColour = 0x1B06003
-    };
-
     SwitchButton (juce::String name, bool isInverted, bool isVertical = false)
         : Button ("SwitchButton"), isInverted (isInverted), isVertical (isVertical)
     {
-        jux::addDefaultColourIdIfNotSet (switchColour, juce::Colours::white);
-        jux::addDefaultColourIdIfNotSet (switchOffBackgroundColour, juce::Colours::darkgrey);
-        jux::addDefaultColourIdIfNotSet (switchOnBackgroundColour, juce::Colours::limegreen);
         setClickingTogglesState (true);
         setToggleState(true, juce::NotificationType::sendNotification);
         addAndMakeVisible(switchCircle);
@@ -65,13 +53,14 @@ public:
         switchCircle.setInterceptsMouseClicks (false, false);
     }
     
-    void setColors(juce::Colour switchCircle, juce::Colour switchBorder, juce::Colour switchOnBack, juce::Colour switchOffBack)
+    void setColors(juce::Colour switchCircleColour, juce::Colour switchBorder, juce::Colour switchOnBack, juce::Colour switchOffBack)
     {
-        auto& def = juce::LookAndFeel::getDefaultLookAndFeel();
-        def.setColour (switchColour, switchCircle);
-        def.setColour (switchOffBackgroundColour, switchOffBack);
-        def.setColour (switchOnBackgroundColour, switchOnBack);
-        def.setColour (switchBorderColour, switchBorder);
+        switchColour = switchCircleColour;
+        switchOffBackgroundColour = switchOffBack;
+        switchOnBackgroundColour = switchOnBack;
+        switchBorderColour = switchBorder;
+        
+        switchCircle.setColour(switchColour);
     }
 
     void setMillisecondsToSpendMoving (int newValue)
@@ -96,16 +85,16 @@ public:
     {
         auto b = getSwitchBounds();
         auto cornerSize = (isVertical ? b.getWidth() : b.getHeight()) * 0.5;
-        g.setColour (findColour(switchBorderColour));
+        g.setColour (switchBorderColour);
         g.drawRoundedRectangle (b, cornerSize, 2.0f);
-        g.setColour (findColour (getSwitchState() ? switchOnBackgroundColour : switchOffBackgroundColour));
+        g.setColour (getSwitchState() ? switchOnBackgroundColour : switchOffBackgroundColour);
         g.fillRoundedRectangle (b, cornerSize);
         
         juce::Path switchPath;
         switchPath.addRoundedRectangle (b, cornerSize, cornerSize);
         g.fillPath (switchPath);
 
-        g.setColour(findColour(switchColour));
+        g.setColour(switchColour);
         g.drawText (getSwitchState() ? "  " + onText : offText + "  ", b, getSwitchState() ? juce::Justification::left : juce::Justification::right);
         
         juce::Rectangle<float> switchCircleBounds;
@@ -153,15 +142,34 @@ private:
         auto b = getLocalBounds().toFloat().reduced (4, 4);
         return b;
     }
-
+    
     class SwitchCircle : public Component
     {
+    public:
+        SwitchCircle (juce::Colour colour): Component(), switchColour{colour}
+        {}
         void paint (juce::Graphics& g) override
         {
-            g.setColour (findColour (switchColour));
+            g.setColour(switchColour);
             g.fillEllipse (getLocalBounds().toFloat());
         }
-    } switchCircle;
+        
+        void setColour(juce::Colour colour)
+        {
+            switchColour = colour;
+        }
+    private:
+        juce::Colour switchColour{juce::Colours::white};
+        
+    };
+    
+    juce::Colour switchColour{0xFFE68C6C};
+    juce::Colour switchOnBackgroundColour = juce::Colours::transparentWhite;
+    juce::Colour switchOffBackgroundColour = juce::Colours::transparentWhite;
+    juce::Colour switchBorderColour = juce::Colour{0xFF431403}.withAlpha(0.5f);
+    
+    SwitchCircle switchCircle{switchColour};
+    
     juce::ComponentAnimator animator;
     
     juce::String onText{};

@@ -8,19 +8,29 @@ GifComponent::GifComponent() :
     int width  = jifObj.getWidth() > 0 ? jifObj.getWidth() : 600;
     int height  = jifObj.getHeight() > 0 ? jifObj.getHeight() : 400;
     setSize(width/1.32, height/1.32);
-    startAnimation(true);
+    setRotationSpeed(true);
+    startAnimation();
 }
 
 void GifComponent::setRotationSpeed(bool slowSpeed)
 {
-    startTimerHz(slowSpeed ? 15 : 40);
+    currentSpeed = getRotationSpeed(slowSpeed);
+    if (isTimerRunning())
+    {
+        startTimerHz(currentSpeed);
+    }
 }
 
-void GifComponent::startAnimation(bool slowSpeed)
+int GifComponent::getRotationSpeed(bool isSlowMode) const
+{
+    return isSlowMode ? 15 : 40;
+}
+
+void GifComponent::startAnimation()
 {
     if (!isTimerRunning())
     {
-        setRotationSpeed(slowSpeed);
+        startTimerHz(currentSpeed);
     }
 }
 
