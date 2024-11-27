@@ -86,7 +86,7 @@ public:
         auto b = getSwitchBounds();
         auto cornerSize = (isVertical ? b.getWidth() : b.getHeight()) * 0.5;
         g.setColour (switchBorderColour);
-        g.drawRoundedRectangle (b, cornerSize, 2.0f);
+        g.drawRoundedRectangle (b, cornerSize, 2.3f);
         g.setColour (getSwitchState() ? switchOnBackgroundColour : switchOffBackgroundColour);
         g.fillRoundedRectangle (b, cornerSize);
         

@@ -81,6 +81,8 @@ public:
     }
 
     void moveGroupsDown(int shift);
+
+    void setColoursToSlider(juce::Slider*);
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -102,6 +104,11 @@ private:
     std::unique_ptr<juce::Label> lblAnimation;
     std::unique_ptr<jux::SwitchButton> animationSwitch;
     std::unique_ptr<jux::SwitchButton> speedSwitch;
+
+    inline static const juce::Colour sliderOutColor{0xff97655f};
+    inline static const juce::Colour sliderFillColor{0xfff8b69f};
+    inline static const juce::Colour sliderThumbColor{0xffd73d3d};
+
     //[/UserVariables]
 
     //==============================================================================
@@ -109,19 +116,19 @@ private:
     std::unique_ptr<juce::ToggleButton> btnLeslie122;
     std::unique_ptr<juce::ToggleButton> btnLeslie147;
     std::unique_ptr<juce::GroupComponent> groupSpectralDelay;
-    std::unique_ptr<juce::Slider> sliderCutOff;
     std::unique_ptr<juce::Label> lblCutOff;
     std::unique_ptr<juce::Label> lblBalance;
     std::unique_ptr<juce::Label> lblAmplitude;
     std::unique_ptr<juce::Label> lblBassFilter;
     std::unique_ptr<juce::Slider> sliderTrebleFilter;
-    std::unique_ptr<juce::GroupComponent> groupCrossOver;
     std::unique_ptr<juce::GroupComponent> groupModulation;
     std::unique_ptr<juce::Label> lblSpeed;
     std::unique_ptr<juce::Slider> sliderAmplitude;
     std::unique_ptr<juce::Slider> sliderBalance;
     std::unique_ptr<juce::Label> lblTrebleFilter;
     std::unique_ptr<juce::Slider> sliderBassFilter;
+    std::unique_ptr<juce::GroupComponent> groupCrossOver;
+    std::unique_ptr<juce::Slider> sliderCutOff;
 
 
     //==============================================================================
