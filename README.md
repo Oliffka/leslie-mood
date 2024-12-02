@@ -2,7 +2,7 @@
 
 This project involves the development of an audio plugin that emulates the sound of a Leslie speaker. This rotary speaker system produces a rich and distinctive sound, characterized by amplitude and frequency modulation effects due to the rotating components. Additionally, the system introduces harmonic distortion from the amplifier and complex reflections caused by the cabinet's design.
 
-<img src="/Images/leslie.jpeg" alt="The Leslie cabinet" style="width:50%; height:auto;">
+<img src="/Images/leslie.png" alt="The Leslie cabinet" style="width:50%; height:auto;">
 
 The current implementation explores two approaches to simulate this effect: signal processing approach and black-box modelling using deep learning techniques.
 
