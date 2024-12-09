@@ -102,8 +102,6 @@ void LeslieSpeakerPluginAudioProcessor::changeProgramName (int index, const juce
 //==============================================================================
 void LeslieSpeakerPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    currentFs = sampleRate;
-    
     juce::dsp::ProcessSpec spec;
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = samplesPerBlock;
@@ -135,10 +133,10 @@ void LeslieSpeakerPluginAudioProcessor::prepareToPlay (double sampleRate, int sa
     const float amplitude = *tree.getRawParameterValue(ParamId::amplitude);
     updateAmplitude(amplitude);
     
-    bassFreqModulator.amplitide = 0.04f;
+    bassFreqModulator.scale = 0.04f;
     bassFreqModulator.bias = -0.92f;
     
-    trebleFreqModulator.amplitide = 0.2f;
+    trebleFreqModulator.scale = 0.2f;
     trebleFreqModulator.bias = -0.75f;
     
     curInSample = 0.f, curOutSample = 0.f;
@@ -181,7 +179,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout LeslieSpeakerPluginAudioProc
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
-    params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::cutOff, "crossover cutoff frequency", 500.f, 5000.f, 800.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::cutOff, "crossover cutoff frequency", 500.f, 1500.f, 700.f));
     
     params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::balance, "bass/treble balance", 0.f, 1.f, 0.5f));
     
