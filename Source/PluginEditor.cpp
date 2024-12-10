@@ -36,6 +36,9 @@ LeslieSpeakerPluginAudioProcessorEditor::LeslieSpeakerPluginAudioProcessorEditor
     
     setSize (pluginGui->getWidth(), pluginGui->getHeight());
     
+    pluginGui->getSpeedButton()->addListener(this);
+    pluginGui->getAnimationSwitchButton()->addListener(this);
+    
     cutOffAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "cutoff", *pluginGui->getCutOffSlider() );
 
     balanceAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "balance", *pluginGui->getBalanceSlider() );
@@ -47,9 +50,6 @@ LeslieSpeakerPluginAudioProcessorEditor::LeslieSpeakerPluginAudioProcessorEditor
     trebleFilterOrderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.tree, "trebleFilterOrder", *pluginGui->getTrebleFilterSlider() );
     
     speedAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.tree, "slowSpeed", *pluginGui->getSpeedButton() );
-    
-    pluginGui->getSpeedButton()->addListener(this);
-    pluginGui->getAnimationSwitchButton()->addListener(this);
 }
 
 LeslieSpeakerPluginAudioProcessorEditor::~LeslieSpeakerPluginAudioProcessorEditor()
@@ -85,7 +85,6 @@ void LeslieSpeakerPluginAudioProcessorEditor::buttonClicked (juce::Button* butto
 
 void LeslieSpeakerPluginAudioProcessorEditor::buttonStateChanged (juce::Button* button)
 {
-    // Here it's assumed that processorEditor is listening to only one button - rotationSpeed
     if (button == pluginGui->getSpeedButton())
     {
         bool isSlow = pluginGui->getSpeedButton()->getToggleState();

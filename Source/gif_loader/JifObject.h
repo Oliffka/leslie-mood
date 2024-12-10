@@ -1,12 +1,13 @@
 //
-//  jifObject.hpp
+//  jifObject.h
 //  LeslieSpeakerPlugin
 //
 //  Created by Olga Besedova on 11/04/2024.
+//  Temporary implementation adapted from Mrugalla's GIFLoad repository.
 //
 
 #pragma once
-#include "jifImage.hpp"
+#include "JifImage.h"
 
 namespace jif {
 

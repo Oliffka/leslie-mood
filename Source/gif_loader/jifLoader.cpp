@@ -3,9 +3,10 @@
 //  LeslieSpeakerPlugin
 //
 //  Created by Olga Besedova on 10/04/2024.
+//  Temporary implementation adapted from Mrugalla's GIFLoad repository.
 //
 
-#include "jifLoader.hpp"
+#include "JifLoader.h"
 
 namespace jif
 {

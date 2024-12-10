@@ -9,12 +9,12 @@
       <FILE id="wU3EiI" name="utils.h" compile="0" resource="0" file="Source/custom/utils.h"/>
     </GROUP>
     <GROUP id="{C7B2CA11-EA44-AE5D-5D52-33081BDAC067}" name="gif_loader">
-      <FILE id="l1QV52" name="jifFormat.h" compile="0" resource="0" file="Source/gif_loader/jifFormat.h"/>
-      <FILE id="pow5pA" name="jifImage.hpp" compile="0" resource="0" file="Source/gif_loader/jifImage.hpp"/>
-      <FILE id="lwMAtT" name="jifLoader.cpp" compile="1" resource="0" file="Source/gif_loader/jifLoader.cpp"/>
-      <FILE id="mrzmd9" name="jifLoader.hpp" compile="0" resource="0" file="Source/gif_loader/jifLoader.hpp"/>
-      <FILE id="IWeIFp" name="jifObject.cpp" compile="1" resource="0" file="Source/gif_loader/jifObject.cpp"/>
-      <FILE id="hnV2X8" name="jifObject.hpp" compile="0" resource="0" file="Source/gif_loader/jifObject.hpp"/>
+      <FILE id="ckHcyU" name="JifFormat.h" compile="0" resource="0" file="Source/gif_loader/JifFormat.h"/>
+      <FILE id="SQlln1" name="JifImage.h" compile="0" resource="0" file="Source/gif_loader/JifImage.h"/>
+      <FILE id="EtudT6" name="JifLoader.cpp" compile="1" resource="0" file="Source/gif_loader/JifLoader.cpp"/>
+      <FILE id="mEhkQ0" name="JifLoader.h" compile="0" resource="0" file="Source/gif_loader/JifLoader.h"/>
+      <FILE id="yuLTbM" name="JifObject.cpp" compile="1" resource="0" file="Source/gif_loader/JifObject.cpp"/>
+      <FILE id="zS0IFn" name="JifObject.h" compile="0" resource="0" file="Source/gif_loader/JifObject.h"/>
     </GROUP>
     <GROUP id="{DD53C9E9-ED58-762B-8F73-C218043C846A}" name="Images">
       <FILE id="xj1CHE" name="back.png" compile="0" resource="1" file="Images/back.png"/>

@@ -122,7 +122,7 @@ void LeslieSpeakerPluginAudioProcessor::prepareToPlay (double sampleRate, int sa
     const float cutoff = *tree.getRawParameterValue(ParamId::cutOff);
     updateCutoff(cutoff);
     
-    const float modFreq = getLFO();
+    const auto modFreq = getModulationFrequency();
     updateRotationSpeed(modFreq);
     
     bassAmpModulator.fs = sampleRate;
@@ -194,15 +194,15 @@ juce::AudioProcessorValueTreeState::ParameterLayout LeslieSpeakerPluginAudioProc
     return{ params.begin(), params.end() };
 }
 
-float LeslieSpeakerPluginAudioProcessor::getLFO() const
+float LeslieSpeakerPluginAudioProcessor::getModulationFrequency() const
 {
     bool slowSpeedParam = *tree.getRawParameterValue(ParamId::slowSpeed);
-    return getLFO(slowSpeedParam);
+    return getModulationFrequency(slowSpeedParam);
 }
 
-float LeslieSpeakerPluginAudioProcessor::getLFO(bool slowSpeedParameter) const
+float LeslieSpeakerPluginAudioProcessor::getModulationFrequency(bool slowSpeedParameter) const
 {
-    return slowSpeedParameter ? slowSpeed : fastSpeed;
+    return slowSpeedParameter ? slowModulationFreq : fastModulationFreq;
 }
 
 void LeslieSpeakerPluginAudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
@@ -213,7 +213,7 @@ void LeslieSpeakerPluginAudioProcessor::parameterChanged(const juce::String& par
     }
     else if (parameterID == ParamId::slowSpeed)
     {
-        updateRotationSpeed(getLFO(static_cast<int>(newValue) == 1));
+        updateRotationSpeed(getModulationFrequency(static_cast<int>(newValue) == 1));
     }
     else if (parameterID == ParamId::amplitude)
     {
@@ -233,11 +233,11 @@ void LeslieSpeakerPluginAudioProcessor::updateCutoff(float newCutoff)
 
 void LeslieSpeakerPluginAudioProcessor::updateAmplitude(float bottomLimit)
 {
-    const auto amplitude = (1 - bottomLimit) / 2;
-    const auto bias = bottomLimit + amplitude;
+    const auto scale = (1 - bottomLimit) / 2;
+    const auto bias = bottomLimit + scale;
     
-    bassAmpModulator.changeAmplitudeBias(amplitude, bias);
-    trebleAmpModulator.changeAmplitudeBias(amplitude, bias);
+    bassAmpModulator.changeScaleBias(scale, bias);
+    trebleAmpModulator.changeScaleBias(scale, bias);
 }
 
 void LeslieSpeakerPluginAudioProcessor::updateRotationSpeed(float newLfo)

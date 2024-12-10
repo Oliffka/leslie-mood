@@ -1,6 +1,6 @@
 #pragma once
 #include <JuceHeader.h>
-#include "gif_loader/jifObject.hpp"
+#include "gif_loader/JifObject.h"
 
 class GifComponent :
     public juce::Component,

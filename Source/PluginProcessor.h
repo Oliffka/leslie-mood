@@ -117,7 +117,7 @@ private:
             freq = newFreq;
         }
         
-        void changeAmplitudeBias(float newScale, float newBias)
+        void changeScaleBias(float newScale, float newBias)
         {
             reset();
             scale = newScale;
@@ -142,7 +142,7 @@ private:
     /**
      * User-configurable parameters for the Leslie Speaker simulation.
      * These parameters define key aspects of the simulation, such as cutoff frequency,
-     * speed settings, and filter characteristics.
+     * rotation speed, and filter characteristics.
      */
     struct ParamId
     {
@@ -157,8 +157,8 @@ private:
     /**
      * Setter and getter methods
      */
-    float getLFO() const;
-    float getLFO(bool) const;
+    float getModulationFrequency() const;
+    float getModulationFrequency(bool) const;
     
     void updateCutoff(float);
     void updateAmplitude(float);
@@ -174,8 +174,11 @@ private:
     float curInTrebleSample{0.f}, curOutTrebleSample{0.f};
     float prevInTrebleSample{0.f}, prevOutTrebleSample{0.f};
     
-    const float slowSpeed{2.f};
-    const float fastSpeed{6.f};
+    /**
+     * Modulation frequencies corresponding to slow and fast rotation speed.
+     */
+    const float slowModulationFreq{2.f};
+    const float fastModulationFreq{6.f};
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LeslieSpeakerPluginAudioProcessor)
 };
