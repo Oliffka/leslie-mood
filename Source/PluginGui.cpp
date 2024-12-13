@@ -34,7 +34,7 @@ PluginGui::PluginGui ()
     //[/Constructor_pre]
 
     groupAILeslie.reset (new juce::GroupComponent (juce::String(),
-                                                   TRANS ("AI Leslie")));
+                                                   TRANS ("AI Leslie (work in progress)")));
     addAndMakeVisible (groupAILeslie.get());
     groupAILeslie->setColour (juce::GroupComponent::outlineColourId, juce::Colour (0xffc81010));
     groupAILeslie->setColour (juce::GroupComponent::textColourId, juce::Colour (0xff431403));
@@ -89,7 +89,7 @@ PluginGui::PluginGui ()
     lblBalance->setBounds (32, 361, 142, 40);
 
     lblAmplitude.reset (new juce::Label ("new label",
-                                         TRANS ("Amp modulation")));
+                                         TRANS ("AmpMod depth")));
     addAndMakeVisible (lblAmplitude.get());
     lblAmplitude->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     lblAmplitude->setJustificationType (juce::Justification::centredLeft);
@@ -97,7 +97,7 @@ PluginGui::PluginGui ()
     lblAmplitude->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     lblAmplitude->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    lblAmplitude->setBounds (200, 361, 126, 40);
+    lblAmplitude->setBounds (200, 360, 110, 40);
 
     lblBassFilter.reset (new juce::Label ("new label",
                                           TRANS ("Bass filter order")));
@@ -141,7 +141,7 @@ PluginGui::PluginGui ()
 
     sliderAmplitude.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (sliderAmplitude.get());
-    sliderAmplitude->setRange (0, 0.9, 0.001);
+    sliderAmplitude->setRange (0, 1, 0.001);
     sliderAmplitude->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     sliderAmplitude->setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 20);
     sliderAmplitude->setColour (juce::Slider::thumbColourId, juce::Colour (0xffd73d3d));
@@ -221,7 +221,9 @@ PluginGui::PluginGui ()
     //[Constructor] You can add your own custom stuff here..
     setSize (backImage.getWidth()/1.7, backImage.getHeight()/1.7);
     moveGroupsDown(190);
-    std::cout<<"width: " << backImage.getWidth()<<"; height: " << backImage.getHeight();
+
+    btnLeslie122->setEnabled(false);
+    btnLeslie147->setEnabled(false);
 
     lblAnimation.reset (new juce::Label ("lblAnimation",
                                       TRANS ("Animation")));
@@ -427,7 +429,7 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="ff323e44"/>
   <GROUPCOMPONENT name="" id="2a8806637c608952" memberName="groupAILeslie" virtualName=""
                   explicitFocusOrder="0" pos="150 53 208 126" outlinecol="ffc81010"
-                  textcol="ff431403" title="AI Leslie"/>
+                  textcol="ff431403" title="AI Leslie (work in progress)"/>
   <TOGGLEBUTTON name="new toggle button" id="8ab70b18bcc38372" memberName="btnLeslie122"
                 virtualName="" explicitFocusOrder="0" pos="192 79 150 24" txtcol="ff431403"
                 buttonText="Leslie 122A" connectedEdges="0" needsCallback="1"
@@ -450,8 +452,8 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="b44cea7f90b9d0a" memberName="lblAmplitude"
-         virtualName="" explicitFocusOrder="0" pos="200 361 126 40" edTextCol="ff000000"
-         edBkgCol="0" labelText="Amp modulation" editableSingleClick="0"
+         virtualName="" explicitFocusOrder="0" pos="200 360 110 40" edTextCol="ff000000"
+         edBkgCol="0" labelText="AmpMod depth" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="28cc27f5fd45d043" memberName="lblBassFilter"
@@ -475,7 +477,7 @@ BEGIN_JUCER_METADATA
   <SLIDER name="new slider" id="b333c53b21fc68d8" memberName="sliderAmplitude"
           virtualName="" explicitFocusOrder="0" pos="205 392 99 96" thumbcol="ffd73d3d"
           rotarysliderfill="fff8b69f" rotaryslideroutline="ff97655f" min="0.0"
-          max="0.9" int="0.001" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
+          max="1.0" int="0.001" style="RotaryHorizontalVerticalDrag" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="1530f04e789f3465" memberName="sliderBalance"

@@ -7,7 +7,7 @@
 */
 
 #pragma once
-
+#include <vector>
 #include <JuceHeader.h>
 
 //==============================================================================
@@ -168,11 +168,40 @@ private:
      * Variables used in the signal processing block.
      * These members handle audio processing tasks.
      */
-    float curInSample{0.f}, curOutSample{0.f};
-    float prevInSample{0.f}, prevOutSample{0.f};
     
-    float curInTrebleSample{0.f}, curOutTrebleSample{0.f};
-    float prevInTrebleSample{0.f}, prevOutTrebleSample{0.f};
+    struct DelayLineState
+    {
+    public:
+        DelayLineState(int max_order)
+        {
+            Init(max_order);
+        }
+        
+        std::vector<float> trebleDelayLineIn;
+        std::vector<float> trebleDelayLineOut;
+        std::vector<float> bassDelayLineIn;
+        std::vector<float> bassDelayLineOut;
+        int maxOrder;
+        
+    private:
+        void Init(int max_order)
+        {
+            maxOrder = max_order;
+            
+            trebleDelayLineIn.reserve(max_order);
+            trebleDelayLineOut.reserve(max_order);
+            bassDelayLineIn.reserve(max_order);
+            bassDelayLineOut.reserve(max_order);
+            for(auto i = 0; i < max_order; i++ )
+            {
+                trebleDelayLineIn.push_back(0.f);
+                bassDelayLineIn.push_back(0.f);
+                trebleDelayLineOut.push_back(0.f);
+                bassDelayLineOut.push_back(0.f);
+            }
+        }
+    };
+    std::vector<DelayLineState> delayLines;
     
     /**
      * Modulation frequencies corresponding to slow and fast rotation speed.

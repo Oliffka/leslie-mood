@@ -102,45 +102,68 @@ void LeslieSpeakerPluginAudioProcessor::changeProgramName (int index, const juce
 //==============================================================================
 void LeslieSpeakerPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    // Configure the DSP processing specification
     juce::dsp::ProcessSpec spec;
-    spec.sampleRate = sampleRate;
-    spec.maximumBlockSize = samplesPerBlock;
-    spec.numChannels = getTotalNumOutputChannels();
+    spec.sampleRate = sampleRate;                  // Set the sample rate
+    spec.maximumBlockSize = samplesPerBlock;       // Set the block size
+    spec.numChannels = getTotalNumOutputChannels();// Set the number of output channels
     
+    // Initialize the low-pass and high-pass filters
     lowPassFilter.prepare(spec);
-    lowPassFilter.reset();
+    lowPassFilter.reset();                         // Reset filter state
     
     highPassFilter.prepare(spec);
-    highPassFilter.reset();
+    highPassFilter.reset();                        // Reset filter state
     
+    // Prepare and configure the dry/wet mixer
     dwMixer.prepare(spec);
     dwMixer.setMixingRule(juce::dsp::DryWetMixingRule::balanced);
     
+    // Retrieve and set the initial mix balance
     const float balance = *tree.getRawParameterValue(ParamId::balance);
     dwMixer.setWetMixProportion(balance);
     
+    // Retrieve the initial cutoff frequency and update filters
     const float cutoff = *tree.getRawParameterValue(ParamId::cutOff);
     updateCutoff(cutoff);
     
+    // Retrieve modulation frequency and update rotation speed
     const auto modFreq = getModulationFrequency();
     updateRotationSpeed(modFreq);
     
+    // Set the sampling rate for amplitude and frequency modulators
     bassAmpModulator.fs = sampleRate;
     trebleAmpModulator.fs = sampleRate;
     bassFreqModulator.fs = sampleRate;
     trebleFreqModulator.fs = sampleRate;
     
+    // Set the initial modulation amplitude
     const float amplitude = *tree.getRawParameterValue(ParamId::amplitude);
-    updateAmplitude(amplitude);
+    const auto bottomLimit = 1 - amplitude;
+    updateAmplitude(bottomLimit);
     
-    bassFreqModulator.scale = 0.04f;
-    bassFreqModulator.bias = -0.92f;
+    // Configure modulation parameters for bass and treble frequencies
+    // These values are derived from a research article that describes this method
+    // and are chosen to create a pleasant sound effect.
+    bassFreqModulator.scale = 0.04f;  // Scale for bass frequency modulation
+    bassFreqModulator.bias = -0.92f;  // Bias for bass frequency modulation
     
-    trebleFreqModulator.scale = 0.2f;
-    trebleFreqModulator.bias = -0.75f;
+    trebleFreqModulator.scale = 0.2f; // Scale for treble frequency modulation
+    trebleFreqModulator.bias = -0.75f;// Bias for treble frequency modulation
     
-    curInSample = 0.f, curOutSample = 0.f;
-    prevInSample = 0.f, prevOutSample = 0.f;
+    // Initialize delay line for processing
+    delayLines.clear();
+    delayLines.reserve(getTotalNumInputChannels());
+    auto bassFilterMaxOrder = tree.getParameter(ParamId::bassFilterOrder)->getNormalisableRange().end;
+    
+    auto trebleFilterMaxOrder = tree.getParameter(ParamId::trebleFilterOrder)->getNormalisableRange().end;
+    
+    auto maxOrder = static_cast<int>(std::max(bassFilterMaxOrder, trebleFilterMaxOrder));
+    
+    for (auto i = 0; i < getTotalNumInputChannels(); ++i)
+    {
+        delayLines.push_back(DelayLineState{maxOrder});
+    }
 }
 
 void LeslieSpeakerPluginAudioProcessor::releaseResources()
@@ -175,23 +198,39 @@ bool LeslieSpeakerPluginAudioProcessor::isBusesLayoutSupported (const BusesLayou
 }
 #endif
 
+// Initializes the parameters that the user can configure for the audio plugin
 juce::AudioProcessorValueTreeState::ParameterLayout LeslieSpeakerPluginAudioProcessor::createParameters()
 {
+    // Vector to hold all the parameters
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
-    params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::cutOff, "crossover cutoff frequency", 500.f, 1500.f, 700.f));
+    // Parameter for the crossover cutoff frequency between bass and treble.
+    // Default: 700 Hz, Range: 500 Hz to 1500 Hz.
+    params.push_back(std::make_unique<juce::AudioParameterInt> (ParamId::cutOff, "crossover cutoff frequency", 500, 1500, 700));
     
+    // Parameter for balancing bass and treble levels.
+    // Values of 0 or 1 emphasize low-frequency (bass) or high-frequency (treble) components respectively.
+    // Default: 0.5 (balanced), Range: 0.0 to 1.0.
     params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::balance, "bass/treble balance", 0.f, 1.f, 0.5f));
     
-    params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::amplitude, "amplitude modulation", 0.f, 0.9f, 0.7f));
+    // Parameter for controlling the amplitude modulation depth.
+    // Allows the user to set how strongly the amplitude varies over time.
+    // Default: 0.7, Range: 0.0 to 0.9.
+    params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::amplitude, "amplitude modulation depth", 0.f, 1.f, 0.2f));
     
-    params.push_back(std::make_unique<juce::AudioParameterInt> (ParamId::bassFilterOrder, "SDF filter's order for bass modulation", 1, 5, 3));
+    // Parameter to define the order of the bass SDF filter.
+    // Default: 3, Range: 1 to 5.
+    params.push_back(std::make_unique<juce::AudioParameterInt> (ParamId::bassFilterOrder, "SDF filter's order for bass modulation", 1, 6, 3));
     
-    params.push_back(std::make_unique<juce::AudioParameterInt> (ParamId::trebleFilterOrder, "SDF filter's order for treble modulation", 1, 5, 4));
+    // Parameter to define the order of the treble SDF filter.
+    // Default: 4, Range: 1 to 5.
+    params.push_back(std::make_unique<juce::AudioParameterInt> (ParamId::trebleFilterOrder, "SDF filter's order for treble modulation", 1, 6, 4));
     
+    // Boolean parameter to toggle the rotation speed between slow and fast.
+    // Default: true (slow speed).
     params.push_back(std::make_unique<juce::AudioParameterBool> (ParamId::slowSpeed, "rotation speed is slow", true));
     
-    return{ params.begin(), params.end() };
+    return { params.begin(), params.end() };
 }
 
 float LeslieSpeakerPluginAudioProcessor::getModulationFrequency() const
@@ -205,6 +244,7 @@ float LeslieSpeakerPluginAudioProcessor::getModulationFrequency(bool slowSpeedPa
     return slowSpeedParameter ? slowModulationFreq : fastModulationFreq;
 }
 
+// Updates the relevant parameters when their values change
 void LeslieSpeakerPluginAudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
     if (parameterID == ParamId::cutOff)
@@ -217,7 +257,8 @@ void LeslieSpeakerPluginAudioProcessor::parameterChanged(const juce::String& par
     }
     else if (parameterID == ParamId::amplitude)
     {
-        updateAmplitude(newValue);
+        const auto bottomLimit = 1 - newValue;
+        updateAmplitude(bottomLimit);
     }
     else if (parameterID == ParamId::balance)
     {
@@ -225,14 +266,17 @@ void LeslieSpeakerPluginAudioProcessor::parameterChanged(const juce::String& par
     }
 }
 
+// Updates the cutoff frequency for both low-pass and high-pass filters
 void LeslieSpeakerPluginAudioProcessor::updateCutoff(float newCutoff)
 {
     lowPassFilter.setCutoffFrequency(newCutoff);
     highPassFilter.setCutoffFrequency(newCutoff);
 }
 
+// Adjusts the amplitude modulation scale and bias
 void LeslieSpeakerPluginAudioProcessor::updateAmplitude(float bottomLimit)
 {
+    // This is done to guarantee the amplitude modulation range is [bottomLimit, 1]
     const auto scale = (1 - bottomLimit) / 2;
     const auto bias = bottomLimit + scale;
     
@@ -240,13 +284,16 @@ void LeslieSpeakerPluginAudioProcessor::updateAmplitude(float bottomLimit)
     trebleAmpModulator.changeScaleBias(scale, bias);
 }
 
-void LeslieSpeakerPluginAudioProcessor::updateRotationSpeed(float newLfo)
+// Adjusts the rotation speed for modulation frequency
+void LeslieSpeakerPluginAudioProcessor::updateRotationSpeed(float newModFreq)
 {
-    bassAmpModulator.changeFreq(newLfo - 0.05f);
-    bassFreqModulator.changeFreq(newLfo - 0.05f);
+    // As the treble and bass motors are running at slightly different speed,
+    // the treble modulator has 0.1 Hz higher frequency compared to bass modulator
+    bassAmpModulator.changeFreq(newModFreq - 0.05f);
+    bassFreqModulator.changeFreq(newModFreq - 0.05f);
     
-    trebleAmpModulator.changeFreq(newLfo + 0.05f);
-    trebleFreqModulator.changeFreq(newLfo + 0.05f);
+    trebleAmpModulator.changeFreq(newModFreq + 0.05f);
+    trebleFreqModulator.changeFreq(newModFreq + 0.05f);
 }
 
 void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
@@ -293,34 +340,38 @@ void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& 
         for (int channel = 0; channel < outBlockLP.getNumChannels(); ++channel)
         {
             //Bass Frequency modulation
-            curInSample = outBlockLP.getSample(channel, sample);
-
-            auto tmpCurSample = curInSample;
-            for (int cascadeLength = 0; cascadeLength < filterOrderBass; cascadeLength ++)
+            auto curInBassSample = outBlockLP.getSample(channel, sample);
+            float curOutBassSample = 0.f;
+            
+            for (int i = 0; i < filterOrderBass; i++)
             {
-                curOutSample = next_bass_freq * tmpCurSample + prevInSample - next_bass_freq * prevOutSample;
-                tmpCurSample = curOutSample;
+                curOutBassSample = next_bass_freq * curInBassSample + delayLines[channel].bassDelayLineIn[i] - next_bass_freq * delayLines[channel].bassDelayLineOut[i];
+                
+                delayLines[channel].bassDelayLineIn[i] = curInBassSample;
+                delayLines[channel].bassDelayLineOut[i] = curOutBassSample;
+                
+                // Set the input sample for the next allpass filter
+                curInBassSample = curOutBassSample;
             }
-
-            prevInSample = curInSample;
-            prevOutSample = curOutSample;
             
             //Bass Amplitude modulation
-            curOutSample *= next_bass_amp;
-            outBlockLP.setSample(channel, sample, curOutSample);
+            curOutBassSample *= next_bass_amp;
+            outBlockLP.setSample(channel, sample, curOutBassSample);
             
             //Treble Frequency modulation
-            curInTrebleSample = outBlockHP.getSample(channel, sample);
-
-            tmpCurSample = curInTrebleSample;
-            for (int cascadeLength = 0; cascadeLength < filterOrderTreble; cascadeLength ++)
+            auto curInTrebleSample = outBlockHP.getSample(channel, sample);
+            float curOutTrebleSample = 0.f;
+            
+            for (int i = 0; i < filterOrderTreble; i++)
             {
-                curOutTrebleSample = next_treble_freq * tmpCurSample + prevInTrebleSample - next_treble_freq * prevOutTrebleSample;
-                tmpCurSample = curOutTrebleSample;
+                curOutTrebleSample = next_treble_freq * curInTrebleSample + delayLines[channel].trebleDelayLineIn[i] - next_treble_freq * delayLines[channel].trebleDelayLineOut[i];
+                
+                delayLines[channel].trebleDelayLineIn[i] = curInTrebleSample;
+                delayLines[channel].trebleDelayLineOut[i] = curOutTrebleSample;
+                
+                // Set the input sample for the next allpass filter
+                curInTrebleSample = curOutTrebleSample;
             }
-
-            prevInTrebleSample = curInTrebleSample;
-            prevOutTrebleSample = curOutTrebleSample;
             
             //Treble Amplitude modulation
             curOutTrebleSample *= next_treble_amp;
@@ -331,8 +382,10 @@ void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     dwMixer.pushDrySamples(outBlockLP);
     dwMixer.mixWetSamples(outBlockHP);
     
-    buffer.copyFrom(0,0, outBufferHP, 0, 0, outBufferHP.getNumSamples());
-    buffer.copyFrom(1,0, outBufferHP, 1, 0, outBufferHP.getNumSamples());
+    for (auto i = 0; i < totalNumInputChannels; ++i)
+    {
+        buffer.copyFrom(i,0, outBufferHP, i, 0, outBufferHP.getNumSamples());
+    }
 }
 
 //==============================================================================
