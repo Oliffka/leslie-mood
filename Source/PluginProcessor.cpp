@@ -151,14 +151,14 @@ void LeslieSpeakerPluginAudioProcessor::prepareToPlay (double sampleRate, int sa
     trebleFreqModulator.scale = 0.2f; // Scale for treble frequency modulation
     trebleFreqModulator.bias = -0.75f;// Bias for treble frequency modulation
     
-    // Initialize delay line for processing
+    // Initialize delay lines for further dsp processing
     delayLines.clear();
     delayLines.reserve(getTotalNumInputChannels());
-    auto bassFilterMaxOrder = tree.getParameter(ParamId::bassFilterOrder)->getNormalisableRange().end;
+    const auto bassFilterMaxOrder = tree.getParameter(ParamId::bassFilterOrder)->getNormalisableRange().end;
     
-    auto trebleFilterMaxOrder = tree.getParameter(ParamId::trebleFilterOrder)->getNormalisableRange().end;
+    const auto trebleFilterMaxOrder = tree.getParameter(ParamId::trebleFilterOrder)->getNormalisableRange().end;
     
-    auto maxOrder = static_cast<int>(std::max(bassFilterMaxOrder, trebleFilterMaxOrder));
+    const auto maxOrder = static_cast<int>(std::max(bassFilterMaxOrder, trebleFilterMaxOrder));
     
     for (auto i = 0; i < getTotalNumInputChannels(); ++i)
     {
@@ -215,7 +215,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout LeslieSpeakerPluginAudioProc
     
     // Parameter for controlling the amplitude modulation depth.
     // Allows the user to set how strongly the amplitude varies over time.
-    // Default: 0.7, Range: 0.0 to 0.9.
+    // Default: 0.2, Range: 0.0 to 1.0.
     params.push_back(std::make_unique<juce::AudioParameterFloat> (ParamId::amplitude, "amplitude modulation depth", 0.f, 1.f, 0.2f));
     
     // Parameter to define the order of the bass SDF filter.
@@ -329,59 +329,72 @@ void LeslieSpeakerPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     int filterOrderBass = *tree.getRawParameterValue(ParamId::bassFilterOrder);
     int filterOrderTreble = *tree.getRawParameterValue(ParamId::trebleFilterOrder);
     
+    // Frequency modulation lambda function
+    auto doFrequencyModulation = [](auto& delayLineIn, auto& delayLineOut, int filterOrder, float nextModValue, float inputSample) {
+        
+        // initialize current sample with input value
+        float curSample = inputSample;
+        
+        // looping through number of all-pass filters in cascade
+        for (int i = 0; i < filterOrder; i++) {
+            // compute output value according to the difference equation:
+            // y(n) = m(n)x(n) + x(n−1) − m(n)y(n−1),
+            float outSample = nextModValue * curSample + delayLineIn[i] - nextModValue * delayLineOut[i];
+            
+            // update delay line state
+            delayLineIn[i] = curSample;
+            delayLineOut[i] = outSample;
+            
+            // now, output sample of the prev filter is an input sample for the next filter
+            curSample = outSample;
+        }
+        return curSample;
+    };
+    
     for (int sample = 0; sample < outBlockLP.getNumSamples(); ++sample)
     {
-        auto next_bass_amp = bassAmpModulator.getNextValue();
-        auto next_treble_amp = trebleAmpModulator.getNextValue();
+        // get next modulating values
+        auto bassModAmp = bassAmpModulator.getNextValue();
+        auto trebleModAmp = trebleAmpModulator.getNextValue();
         
-        auto next_bass_freq = bassFreqModulator.getNextValue();
-        auto next_treble_freq = trebleFreqModulator.getNextValue();
+        auto bassModFreq = bassFreqModulator.getNextValue();
+        auto trebleModFreq = trebleFreqModulator.getNextValue();
         
+        // process each input channel separately
         for (int channel = 0; channel < outBlockLP.getNumChannels(); ++channel)
         {
-            //Bass Frequency modulation
+            //Bass Amp + Frequency modulation
             auto curInBassSample = outBlockLP.getSample(channel, sample);
-            float curOutBassSample = 0.f;
             
-            for (int i = 0; i < filterOrderBass; i++)
-            {
-                curOutBassSample = next_bass_freq * curInBassSample + delayLines[channel].bassDelayLineIn[i] - next_bass_freq * delayLines[channel].bassDelayLineOut[i];
-                
-                delayLines[channel].bassDelayLineIn[i] = curInBassSample;
-                delayLines[channel].bassDelayLineOut[i] = curOutBassSample;
-                
-                // Set the input sample for the next allpass filter
-                curInBassSample = curOutBassSample;
-            }
-            
-            //Bass Amplitude modulation
-            curOutBassSample *= next_bass_amp;
+            auto curOutBassSample = doFrequencyModulation(
+                        delayLines[channel].bassDelayLineIn,
+                        delayLines[channel].bassDelayLineOut,
+                        filterOrderBass,
+                        bassModFreq,
+                        curInBassSample) * bassModAmp;
+
             outBlockLP.setSample(channel, sample, curOutBassSample);
             
-            //Treble Frequency modulation
+            //Treble Amp + Frequency modulation
             auto curInTrebleSample = outBlockHP.getSample(channel, sample);
-            float curOutTrebleSample = 0.f;
             
-            for (int i = 0; i < filterOrderTreble; i++)
-            {
-                curOutTrebleSample = next_treble_freq * curInTrebleSample + delayLines[channel].trebleDelayLineIn[i] - next_treble_freq * delayLines[channel].trebleDelayLineOut[i];
-                
-                delayLines[channel].trebleDelayLineIn[i] = curInTrebleSample;
-                delayLines[channel].trebleDelayLineOut[i] = curOutTrebleSample;
-                
-                // Set the input sample for the next allpass filter
-                curInTrebleSample = curOutTrebleSample;
-            }
-            
-            //Treble Amplitude modulation
-            curOutTrebleSample *= next_treble_amp;
+            auto curOutTrebleSample = doFrequencyModulation(
+                        delayLines[channel].trebleDelayLineIn,
+                        delayLines[channel].trebleDelayLineOut,
+                        filterOrderTreble,
+                        trebleModFreq,
+                        curInTrebleSample) * trebleModAmp;
+
             outBlockHP.setSample(channel, sample, curOutTrebleSample);
         }
     }
     
+    // blend bass(outBlockLP) and treble(outBlockHP) paths in the required proportion
+    // final output signal is stored in outBufferHP
     dwMixer.pushDrySamples(outBlockLP);
     dwMixer.mixWetSamples(outBlockHP);
     
+    // copy processed signal(outBufferHP) to the buffer
     for (auto i = 0; i < totalNumInputChannels; ++i)
     {
         buffer.copyFrom(i,0, outBufferHP, i, 0, outBufferHP.getNumSamples());

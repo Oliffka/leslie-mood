@@ -2,7 +2,8 @@
 
 <JUCERPROJECT id="DW8QqT" name="LeslieSpeakerPlugin" projectType="audioplug"
               useAppConfig="0" addUsingNamespaceToJuceHeader="0" displaySplashScreen="1"
-              jucerFormatVersion="1" pluginManufacturer="missO">
+              jucerFormatVersion="1" pluginManufacturer="missO" companyName="missOlivia"
+              pluginName="Leslie Mood" pluginDesc="Leslie Speaker emulation plugin">
   <MAINGROUP id="s5AtD7" name="LeslieSpeakerPlugin">
     <GROUP id="{6F668138-914B-AE66-74E3-D958D306F9DB}" name="custom">
       <FILE id="FbuzqX" name="SwitchButton.h" compile="0" resource="0" file="Source/custom/SwitchButton.h"/>
@@ -45,8 +46,8 @@
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="LeslieSpeakerPlugin"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="LeslieSpeakerPlugin"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Leslie Mood"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="Leslie Mood"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../../../../Applications/JUCE/modules"/>

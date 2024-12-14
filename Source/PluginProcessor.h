@@ -165,18 +165,29 @@ private:
     void updateRotationSpeed(float);
     
     /**
-     * Variables used in the signal processing block.
-     * These members handle audio processing tasks.
+     * This structure stores the delay line values required to implement a cascade of several all-pass filters.
+     * For each filter in the cascade, we use the difference equation:
+     * y(n) = m(n)x(n) + x(n−1) − m(n)y(n−1),
+     * so we need to keep track of the previous input (x(n-1)) and previous output (y(n-1)) for
+     * each all-pass filter in the cascade. This structure provides separate delay line states for both the treble
+     * and bass processing paths.
+     *
+     * The maximum order of the SDF filter  (number of all-pass filters in cascade) is specified as `maxOrder`.
      */
-    
     struct DelayLineState
     {
     public:
+        /**
+         * Constructor: Initializes the delay line state for the specified maximum order of a filter.
+         *
+         * @param max_order The maximum number of all-pass filters in the cascade.
+         */
         DelayLineState(int max_order)
         {
             Init(max_order);
         }
         
+        // Vectors to store delay line states for treble and bass processing paths
         std::vector<float> trebleDelayLineIn;
         std::vector<float> trebleDelayLineOut;
         std::vector<float> bassDelayLineIn;
@@ -188,10 +199,13 @@ private:
         {
             maxOrder = max_order;
             
+            // Reserve memory for delay lines to avoid frequent allocations
             trebleDelayLineIn.reserve(max_order);
             trebleDelayLineOut.reserve(max_order);
             bassDelayLineIn.reserve(max_order);
             bassDelayLineOut.reserve(max_order);
+            
+            // Initialize all delay line values to 0.0
             for(auto i = 0; i < max_order; i++ )
             {
                 trebleDelayLineIn.push_back(0.f);

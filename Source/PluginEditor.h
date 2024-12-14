@@ -26,7 +26,7 @@ public:
     LeslieSpeakerPluginAudioProcessorEditor (LeslieSpeakerPluginAudioProcessor&);
     ~LeslieSpeakerPluginAudioProcessorEditor() override;
 
-    //==============================================================================
+    //=============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
     
@@ -39,9 +39,14 @@ private:
     // access the processor object that created it.
     LeslieSpeakerPluginAudioProcessor& audioProcessor;
     
+    // Unique pointer to the pluginGui object, which contains most of the UI elements.
     std::unique_ptr<PluginGui> pluginGui;
+    
+    // Unique pointer to the gifComponent object, responsible for playing GIF animations.
     std::unique_ptr<GifComponent> gifComponent;
     
+    // Attachments for user-configurable parameters, such as cutoff frequency,
+    // bass/treble balance, and modulation-related settings.
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> cutOffAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> balanceAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> amplitudeAttachment;
