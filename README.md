@@ -19,4 +19,6 @@ This approach assumes having a dataset comprising of Original audio (dry signal)
 
 In the Release folder, you will find both VST3 and AU versions of the plugin. Additionally, there is a demo video, providing a brief explanation and demonstration of how to use the plugin: [Leslie Mood Demo](https://youtu.be/jNPVKuDq5Us).
 
+The plugin is built and tested on macOS.
+
 <img src="/Images/leslie_mood.png" alt="The Leslie cabinet" style="width:40%; height:auto;">
