@@ -18,12 +18,7 @@
       <FILE id="zS0IFn" name="JifObject.h" compile="0" resource="0" file="Source/gif_loader/JifObject.h"/>
     </GROUP>
     <GROUP id="{DD53C9E9-ED58-762B-8F73-C218043C846A}" name="Images">
-      <FILE id="xj1CHE" name="back.png" compile="0" resource="1" file="Images/back.png"/>
-      <FILE id="gCGoOl" name="back3.jpeg" compile="0" resource="1" file="Images/back3.jpeg"/>
-      <FILE id="RgI9og" name="back4.png" compile="0" resource="1" file="Images/back4.png"/>
-      <FILE id="UkBgZr" name="horn.gif" compile="0" resource="1" file="../../../Downloads/Leslie Mood Project/gifs/horn.gif"/>
       <FILE id="wv7CdA" name="horn2.gif" compile="0" resource="1" file="Images/horn2.gif"/>
-      <FILE id="q76QGo" name="leslie3.jpg" compile="0" resource="1" file="Images/leslie3.jpg"/>
       <FILE id="fvzyMR" name="leslie4.jpg" compile="0" resource="1" file="Images/leslie4.jpg"/>
     </GROUP>
     <GROUP id="{EE2591C6-44EB-2C02-3A0B-1A3FA6DF8AB5}" name="Source">
