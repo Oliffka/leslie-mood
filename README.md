@@ -1,6 +1,6 @@
 # Leslie Mood - Leslie Speaker Effect Audio Plugin
 
-This project involves the development of an audio plugin that emulates the sound of a Leslie speaker. This rotary speaker system produces a rich and distinctive sound, characterized by amplitude and frequency modulation effects due to the rotating components. Additionally, the system introduces harmonic distortion from the amplifier and complex reflections caused by the cabinet's design.
+This project involves the development of an audio plugin that emulates the sound of a Leslie speaker. This rotary speaker system produces a rich and distinctive sound, characterized by amplitude and frequency modulation effects due to the rotating components. Additionally, the system introduces some distortion from the amplifier and complex reflections caused by the cabinet's design.
 
 <img src="/Images/leslie.png" alt="The Leslie cabinet" style="width:40%; height:auto;">
 
@@ -11,12 +11,12 @@ This approach is based on time-varying spectral delay filters producing a pleasa
 
 
 # DL approach (Work in Progress)
-This implementation explores black-box modelling of the Leslie speaker effect using deep learning techniques. This method is currently under research to identify the most suitable neural network architecture capable of reproducing the complex characteristics of the Leslie speaker sound.
+This implementation explores black-box modelling of the Leslie speaker effect using deep learning techniques. This method is currently under research to identify the most suitable neural network architecture capable of reproducing the complex characteristics of the Leslie speaker effect.
 
 This approach assumes having a dataset comprising of Original audio (dry signal) and Processed audio (Leslie speaker sound). The goal is to train a model to learn the mapping between the dry and processed audio, capturing all the mentioned nuances. Some ideas are inspired by the findings in the [Deep Learning for Black-Box Modeling of Audio Effects](https://www.mdpi.com/2076-3417/10/2/638) article.
 
-# How to use and the demo video 
-In the Release folder you will find the VST3 and AU versions of this plugin. There is also a demo video with a brief explanation and demonstration of how to use the plugin 
-[Leslie mood demo](https://youtu.be/jNPVKuDq5Us).
+# How to Use and Demo Video
+
+In the Release folder, you will find both VST3 and AU versions of the plugin. Additionally, there is a demo video, providing a brief explanation and demonstration of how to use the plugin: [Leslie Mood Demo](https://youtu.be/jNPVKuDq5Us).
 
 <img src="/Images/leslie_mood.png" alt="The Leslie cabinet" style="width:40%; height:auto;">
